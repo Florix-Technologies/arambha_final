@@ -96,8 +96,8 @@ export default function ManageCourses() {
   );
 
   return (
-    <div className="min-h-screen pt-24 pb-20 bg-surface px-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="w-full">
+      <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
           <div>
             <h1 className="font-serif text-4xl font-bold text-primary mb-2">Manage Courses</h1>

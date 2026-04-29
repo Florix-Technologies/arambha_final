@@ -168,7 +168,7 @@ export default function ChunkedUpload() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-20 bg-surface px-6">
+    <div className="w-full">
       <div className="max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -11,8 +11,8 @@ import ServiceDetail from "./pages/ServiceDetail";
 import Careers from "./pages/Careers";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import ChunkedUpload from "./pages/admin/ChunkedUpload";
-import ManageCourses from "./pages/admin/ManageCourses";
+import LegalSupport from "./pages/LegalSupport";
+import AdminPortal from "./pages/admin/AdminPortal";
 import { AuthProvider } from "./context/AuthContext";
 import { AdminRoute } from "./components/AdminRoute";
 
@@ -61,21 +61,14 @@ export default function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/services/:slug" element={<ServiceDetail />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/legal-support" element={<LegalSupport />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route 
-              path="/admin/upload" 
+              path="/admin/portal" 
               element={
                 <AdminRoute>
-                  <ChunkedUpload />
-                </AdminRoute>
-              } 
-            />
-            <Route 
-              path="/admin/manage" 
-              element={
-                <AdminRoute>
-                  <ManageCourses />
+                  <AdminPortal />
                 </AdminRoute>
               } 
             />

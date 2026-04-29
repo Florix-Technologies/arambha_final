@@ -90,53 +90,17 @@ export default function Navbar() {
             </Link>
           ))}
           {isAdmin && (
-            <div 
-              className="relative group"
-              onMouseEnter={() => setIsPortalDropdownOpen(true)}
-              onMouseLeave={() => setIsPortalDropdownOpen(false)}
+            <Link
+              to="/admin/portal"
+              className={`text-sm font-bold tracking-tight transition-colors pb-1 flex items-center gap-1.5 ${
+                location.pathname.startsWith('/admin')
+                  ? 'text-accent-gold border-b-2 border-accent-gold'
+                  : 'text-accent-gold/80 hover:text-accent-gold'
+              }`}
             >
-              <button
-                className={`text-sm font-bold tracking-tight transition-colors pb-1 flex items-center gap-1.5 cursor-pointer ${
-                  location.pathname.startsWith('/admin')
-                    ? 'text-accent-gold border-b-2 border-accent-gold'
-                    : 'text-accent-gold/80 hover:text-accent-gold'
-                }`}
-              >
-                <ShieldCheck size={16} />
-                Portal
-                <Menu size={12} className={`transition-transform duration-200 ${isPortalDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {/* Dropdown Menu */}
-              <div className={`absolute left-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-xl transition-all duration-200 origin-top-left ${
-                isPortalDropdownOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
-              }`}>
-                <div className="p-2 space-y-1">
-                  <Link
-                    to="/admin/upload"
-                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
-                      isActive('/admin/upload')
-                        ? 'bg-accent-gold text-white'
-                        : 'text-primary hover:bg-slate-50'
-                    }`}
-                  >
-                    <ShieldCheck size={16} />
-                    Upload Video
-                  </Link>
-                  <Link
-                    to="/admin/manage"
-                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
-                      isActive('/admin/manage')
-                        ? 'bg-accent-gold text-white'
-                        : 'text-primary hover:bg-slate-50'
-                    }`}
-                  >
-                    <Filter size={16} />
-                    Manage Courses
-                  </Link>
-                </div>
-              </div>
-            </div>
+              <ShieldCheck size={16} />
+              Portal
+            </Link>
           )}
         </div>
 
@@ -189,28 +153,16 @@ export default function Navbar() {
             {isAdmin && (
               <div className="space-y-3">
                 <Link
-                  to="/admin/upload"
+                  to="/admin/portal"
                   className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${
-                    isActive('/admin/upload')
+                    location.pathname.startsWith('/admin')
                       ? 'bg-accent-gold text-white'
                       : 'text-accent-gold hover:bg-accent-gold/5'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <ShieldCheck size={20} />
-                  Upload Video
-                </Link>
-                <Link
-                  to="/admin/manage"
-                  className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${
-                    isActive('/admin/manage')
-                      ? 'bg-accent-gold text-white'
-                      : 'text-accent-gold hover:bg-accent-gold/5'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Filter size={20} />
-                  Manage Courses
+                  Admin Portal
                 </Link>
               </div>
             )}
