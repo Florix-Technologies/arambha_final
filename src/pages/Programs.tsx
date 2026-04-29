@@ -121,7 +121,23 @@ export default function ProgramsScreen() {
     : allPrograms.filter(program => program.category === selectedCategory);
 
   return (
-    <div className="w-full">
+    <div className="w-full font-sans">
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
+
+        :root {
+          --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+          --font-serif: "Lora", serif;
+        }
+
+        .font-serif {
+          font-family: var(--font-serif), serif;
+        }
+
+        .font-sans {
+          font-family: var(--font-sans), sans-serif;
+        }
+      `}} />
       {/* Hero Section */}
       <section className="relative pt-16 pb-20 overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
@@ -132,21 +148,21 @@ export default function ProgramsScreen() {
               animate={{ opacity: 1, x: 0 }}
               className="flex-1 text-left"
             >
-              <h1 className="text-5xl lg:text-7xl font-serif font-bold text-primary leading-[1.1] mb-6">
+              <h1 className="text-5xl lg:text-7xl font-serif font-bold text-primary leading-[1.1] mb-6 italic">
                 Choose the Right Program to<br />
-                <span className="text-accent-gold italic">Start Your Career Journey</span>
+                <span className="text-accent-gold">Start Your Career Journey</span>
               </h1>
-              <p className="text-lg text-text-muted mb-10 max-w-xl font-lora">
+              <p className="text-lg text-text-muted mb-10 max-w-xl font-sans">
                 Explore skill-based, career-focused programs designed to take you from learning to earning with confidence.
               </p>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 font-sans">
                 <button
-                  className="bg-accent-gold hover:bg-accent-gold-dark text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-accent-gold/20 transition-all"
+                  className="bg-accent-gold hover:bg-accent-gold-dark text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-accent-gold/20 transition-all font-serif italic"
                   onClick={() => document.getElementById('programs-section')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   View Programs
                 </button>
-                <button className="border-2 border-primary text-primary px-8 py-4 rounded-xl font-bold hover:bg-primary/5 transition-all">
+                <button className="border-2 border-primary text-primary px-8 py-4 rounded-xl font-bold hover:bg-primary/5 transition-all font-serif italic">
                   Book a Free Class
                 </button>
               </div>
@@ -185,8 +201,8 @@ export default function ProgramsScreen() {
       </section>
 
       {/* Category Filter */}
-      <section id="programs-section" className="max-w-7xl mx-auto px-6 mb-20">
-        <h2 className="text-center text-4xl font-serif text-primary font-bold mb-10">Explore Our Programs</h2>
+      <section id="programs-section" className="max-w-7xl mx-auto px-6 mb-20 font-sans">
+        <h2 className="text-center text-4xl font-serif text-primary font-bold mb-10 italic">Explore Our Programs</h2>
         <div className="bg-white border-2 border-accent-gold p-2 rounded-2xl flex flex-wrap justify-between md:justify-center gap-2 shadow-lg max-w-3xl mx-auto">
           {CATEGORIES.map((cat) => (
             <button
@@ -255,10 +271,10 @@ export default function ProgramsScreen() {
       </div>
 
       {/* Why Choose Us */}
-      <section style={{ backgroundColor: '#D4AF37' }} className="py-24 mb-20">
+      <section style={{ backgroundColor: '#D4AF37' }} className="py-24 mb-20 font-sans">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-serif font-bold text-white">Why Choose Arambha Programs?</h2>
+            <h2 className="text-4xl font-serif font-bold text-white italic">Why Choose Arambha Programs?</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {WHY_CHOOSE_US.map((item, i) => (
@@ -270,8 +286,8 @@ export default function ProgramsScreen() {
                 <div className="w-16 h-16 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-3" style={{ backgroundColor: '#006CA5' }}>
                   {item.icon}
                 </div>
-                <h4 className="text-xl font-bold text-primary mb-3 leading-tight">{item.title}</h4>
-                <p className="text-sm text-text-muted leading-relaxed font-lora">{item.desc}</p>
+                <h4 className="text-xl font-bold text-primary mb-3 leading-tight font-serif italic">{item.title}</h4>
+                <p className="text-sm text-text-muted leading-relaxed font-sans">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -279,24 +295,23 @@ export default function ProgramsScreen() {
       </section>
 
       {/* Final CTA */}
-      <section className="max-w-3xl mx-auto px-6 pb-16">
-        <div className="bg-gradient-to-br from-accent-gold to-accent-gold-dark rounded-2xl p-8 lg:p-12 text-center relative overflow-hidden shadow-xl">
-          <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[size:32px_32px]" />
-          <div className="relative z-10">
-            <h2 className="text-2xl lg:text-3xl font-serif text-primary font-bold mb-3">Start Your Career Journey Today</h2>
-            <p className="text-sm text-primary/80 font-medium mb-7 font-lora">
-              Unlock your potential with premium learning experiences designed for the modern workforce.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button
-                className="bg-primary text-white px-7 py-3 rounded-xl font-bold hover:bg-black transition-all shadow-lg text-sm"
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              >
-                View Programs
-              </button>
-              <button className="bg-white text-primary px-7 py-3 rounded-xl font-bold hover:bg-slate-50 transition-all border border-primary/10 shadow-lg text-sm">
-                Book Free Demo
-              </button>
+      <section className="py-4">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="brand-gradient-gold rounded-3xl p-12 lg:p-24 text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_#ffffff,_transparent)]"></div>
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-headline-lg font-serif font-extrabold text-primary mb-8 italic">Start Your Confidence Journey Today</h2>
+              <p className="text-primary/80 max-w-2xl mx-auto mb-12 text-lg font-medium font-sans">
+                Join structured live training sessions from anywhere in Karnataka. Transform your communication and career with Arambha's proven system.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center font-serif italic">
+                <Link to="/careers" className="bg-primary text-white px-10 py-4 rounded-xl font-bold hover:brightness-110 transition-all shadow-xl flex items-center justify-center gap-2 group text-lg">
+                  View Careers <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
+                <button className="bg-white text-primary border-2 border-primary px-10 py-4 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-lg">
+                  Book Free Demo <Calendar className="h-5 w-5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -348,7 +363,7 @@ function ProgramSection({
   return (
     <section className="mb-20">
       <div className="text-center mb-2">
-        <h2 className="text-4xl lg:text-5xl font-serif font-bold inline-block" style={{ color: '#02367B' }}>{title}</h2>
+        <h2 className="text-4xl lg:text-5xl font-serif font-bold inline-block italic" style={{ color: '#02367B' }}>{title}</h2>
         <div className="mx-auto mt-3 h-1 w-16 rounded-full" style={{ backgroundColor: '#D4AF37' }}></div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">

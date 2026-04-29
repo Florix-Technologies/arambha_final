@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
-import { Check, GraduationCap, Award, TrendingUp, Layers, Star, ArrowRight } from "lucide-react";
+import { Check, GraduationCap, Award, TrendingUp, Layers, Star, ArrowRight, Calendar, ChevronRight } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 
 import hero1 from "../assets/services/hero1.png";
@@ -37,7 +37,34 @@ export default function Services() {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[#F7F9FB]">
+    <div className="min-h-screen bg-[#F7F9FB] font-sans text-primary">
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
+
+        :root {
+          --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+          --font-serif: "Lora", serif;
+          --font-manrope: "Manrope", sans-serif;
+        }
+
+        .services-hero {
+          background: #f8f9fb;
+          font-family: var(--font-sans);
+        }
+
+        .hero-title {
+          font-family: var(--font-serif) !important;
+          font-style: italic;
+        }
+
+        .font-serif {
+          font-family: var(--font-serif), serif;
+        }
+
+        .font-sans {
+          font-family: var(--font-sans), sans-serif;
+        }
+      `}} />
 
       {/* ── Hero Section ── redesigned */}
       <section className="services-hero" aria-label="Our Services">
@@ -54,19 +81,7 @@ export default function Services() {
                     src={hero1}
                     alt="E - learning services"
                     className="main-card__img"
-
                   />
-
-                  {/* <img
-                    src={hero1}
-                    alt="E - learning services"
-                    className="
-                       border-none
-                       outline-none
-                       shadow-none
-                       bg-transparent
-                     "
-                  /> */}
                 </div>
 
                 {/* svg connectors */}
@@ -82,11 +97,11 @@ export default function Services() {
             {/* RIGHT: text content */}
             <motion.div className="hero-right" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.15 }}>
               <h1 className="hero-title"><span className="our">Our</span> <span className="services-gold">Services</span></h1>
-              <p className="hero-sub">We don't just teach — we help you build a career. From learning to placement, we guide you at every step with practical skills and real opportunities.</p>
+              <p className="hero-sub font-sans">We don't just teach — we help you build a career. From learning to placement, we guide you at every step with practical skills and real opportunities.</p>
 
               <div className="hero-ctas">
-                <button className="btn btn-primary" onClick={() => navigate('/programs')}>Explore Programs</button>
-                <button className="btn btn-outline" onClick={() => { /* open consult modal or link */ }}>Consult an Expert</button>
+                <button className="btn btn-primary font-serif italic" onClick={() => navigate('/programs')}>Explore Programs</button>
+                <button className="btn btn-outline font-serif italic" onClick={() => { /* open consult modal or link */ }}>Consult an Expert</button>
               </div>
             </motion.div>
           </motion.div>
@@ -110,14 +125,14 @@ export default function Services() {
               transition={{ duration: 0.6 }}
               className="lg:w-1/2"
             >
-              <span className="inline-block bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#B8860B] font-bold tracking-[0.22em] uppercase text-[11px] px-4 py-1.5 rounded-full mb-6">
+              <span className="inline-block bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#B8860B] font-bold tracking-[0.22em] uppercase text-[11px] px-4 py-1.5 rounded-full mb-6 font-sans">
                 Transformation Leaders
               </span>
-              <h2 className="text-4xl md:text-5xl font-extrabold font-serif text-[#0d2350] mb-6 leading-[1.1]">
+              <h2 className="text-4xl md:text-5xl font-extrabold font-serif italic text-[#0d2350] mb-6 leading-[1.1]">
                 We don't just teach —{" "}
                 <span className="text-[#D4AF37]">we help you build a career.</span>
               </h2>
-              <p className="text-[#3A5785] text-lg mb-6 leading-relaxed max-w-lg">
+              <p className="text-[#3A5785] text-lg mb-6 leading-relaxed max-w-lg font-sans">
                 Our comprehensive approach bridges the gap between academic learning and real-world industrial demands through mentorship and practical exposure.
               </p>
               <motion.img
@@ -149,12 +164,12 @@ export default function Services() {
                 <div className="absolute top-6 right-8 opacity-10 group-hover:opacity-20 transition-opacity">
                   <GraduationCap className="w-20 h-20 text-[#2C4D8A]" />
                 </div>
-                <p className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest mb-2">01 — Learn</p>
-                <h3 className="text-2xl font-extrabold font-serif text-[#0d2350] mb-1">
+                <p className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest mb-2 font-sans">01 — Learn</p>
+                <h3 className="text-2xl font-extrabold font-serif italic text-[#0d2350] mb-1">
                   Industry Experts
                 </h3>
-                <p className="text-[#3A5785] text-sm max-w-xs">Get trained by professionals with real-world experience in top companies.</p>
-                <div className="mt-4 inline-flex items-center gap-1.5 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#B8860B] text-xs font-bold px-3 py-1.5 rounded-full">
+                <p className="text-[#3A5785] text-sm max-w-xs font-sans">Get trained by professionals with real-world experience in top companies.</p>
+                <div className="mt-4 inline-flex items-center gap-1.5 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#B8860B] text-xs font-bold px-3 py-1.5 rounded-full font-sans">
                   <span className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full animate-pulse" />
                   Live Mentorship Sessions
                 </div>
@@ -172,11 +187,11 @@ export default function Services() {
               >
                 <div className="absolute -top-4 -right-4 w-24 h-24 rounded-full bg-[#2C4D8A]/5" />
                 <Award className="w-8 h-8 text-[#D4AF37] mb-4 group-hover:scale-110 transition-transform" />
-                <p className="text-[#D4AF37] text-[11px] font-bold uppercase tracking-widest mb-1">02 — Certify</p>
-                <h3 className="text-lg font-extrabold font-serif text-[#0d2350] leading-tight">
+                <p className="text-[#D4AF37] text-[11px] font-bold uppercase tracking-widest mb-1 font-sans">02 — Certify</p>
+                <h3 className="text-lg font-extrabold font-serif italic text-[#0d2350] leading-tight">
                   Certified<br />Programs
                 </h3>
-                <p className="text-[#3A5785] text-sm mt-3 leading-relaxed">Earn certifications that actually matter in the job market.</p>
+                <p className="text-[#3A5785] text-sm mt-3 leading-relaxed font-sans">Earn certifications that actually matter in the job market.</p>
               </motion.div>
 
               {/* Card 3 — Career Support */}
@@ -191,11 +206,11 @@ export default function Services() {
               >
                 <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-[#2C4D8A]/5" />
                 <TrendingUp className="w-8 h-8 text-[#D4AF37] mb-4 group-hover:scale-110 transition-transform" />
-                <p className="text-[#D4AF37] text-[11px] font-bold uppercase tracking-widest mb-1">03 — Launch</p>
-                <h3 className="text-lg font-extrabold font-serif text-[#0d2350] leading-tight">
+                <p className="text-[#D4AF37] text-[11px] font-bold uppercase tracking-widest mb-1 font-sans">03 — Launch</p>
+                <h3 className="text-lg font-extrabold font-serif italic text-[#0d2350] leading-tight">
                   Career<br />Support
                 </h3>
-                <p className="text-[#3A5785] text-sm mt-3 leading-relaxed">Resume building, interview prep, and placement guidance.</p>
+                <p className="text-[#3A5785] text-sm mt-3 leading-relaxed font-sans">Resume building, interview prep, and placement guidance.</p>
               </motion.div>
 
               {/* Card 4 — Wide bottom: Live Projects */}
@@ -213,9 +228,9 @@ export default function Services() {
                   <Layers className="w-16 h-16 text-[#2C4D8A]" />
                 </div>
                 <div>
-                  <p className="text-[#D4AF37] text-[11px] font-bold uppercase tracking-widest mb-1">04 — Build</p>
-                  <h3 className="text-xl font-extrabold font-serif text-[#0d2350]">Live Projects</h3>
-                  <p className="text-[#3A5785] text-sm mt-1 max-w-sm">Work on real client briefs and build a portfolio that gets you hired.</p>
+                  <p className="text-[#D4AF37] text-[11px] font-bold uppercase tracking-widest mb-1 font-sans">04 — Build</p>
+                  <h3 className="text-xl font-extrabold font-serif italic text-[#0d2350]">Live Projects</h3>
+                  <p className="text-[#3A5785] text-sm mt-1 max-w-sm font-sans">Work on real client briefs and build a portfolio that gets you hired.</p>
                 </div>
               </motion.div>
 
@@ -231,10 +246,10 @@ export default function Services() {
       {/* ── Expert Solutions / Service Cards ── */}
       <section className="py-24 px-6 bg-white">
         <div className="max-w-7xl mx-auto text-center">
-          <span className="text-[#D4AF37] font-bold tracking-[0.2em] uppercase text-xs mb-4 block">
+          <span className="text-[#D4AF37] font-bold tracking-[0.2em] uppercase text-xs mb-4 block font-sans">
             CORE OFFERINGS
           </span>
-          <h2 className="text-4xl font-extrabold font-serif text-[#2C4D8A] mb-16">
+          <h2 className="text-4xl font-extrabold font-serif italic text-[#2C4D8A] mb-16">
             Expert Solutions for Growth
           </h2>
 
@@ -246,25 +261,28 @@ export default function Services() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.08 }}
-                className="bg-white rounded-2xl overflow-hidden border border-[#E0E3E5] shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group flex flex-col text-left"
+                onClick={() => navigate(service.link)}
+                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-slate-100 cursor-pointer text-left flex flex-col"
               >
-                <div className="h-auto overflow-hidden relative bg-gradient-to-b from-[#f0f4ff] to-[#f8faff]">
+                <div className="h-64 overflow-hidden relative">
                   <img
                     src={service.image}
                     alt={service.title}
-                    className="service-card-image transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="p-8 flex flex-col flex-grow">
-                  <p className="text-[#3A5785] text-sm leading-relaxed flex-grow font-sans">{service.description}</p>
-                  <div className="mt-6 pt-4 border-t border-slate-100">
-                    <Link
-                      to={service.link}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm text-white bg-[#2C4D8A] hover:bg-[#D4AF37] transition-all duration-300 group/btn"
-                    >
-                      Learn More
-                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                    </Link>
+                  <h3 className="text-xl text-primary mb-3 font-serif font-bold italic group-hover:text-accent-gold transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-on-surface-variant mb-6 font-sans text-sm leading-relaxed line-clamp-3 flex-grow">
+                    {service.description}
+                  </p>
+                  <div className="flex items-center justify-between pt-6 border-t border-slate-100 text-sm mt-auto">
+                    <span className="font-bold text-primary font-serif italic uppercase tracking-wider">Learn More</span>
+                    <div className="bg-[#F7F9FB] p-1 rounded-full group-hover:bg-accent-gold group-hover:text-white transition-colors">
+                      <ChevronRight size={20} />
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -277,10 +295,10 @@ export default function Services() {
       <section className="py-24 px-6 bg-[#F7F9FB]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold font-serif text-[#2C4D8A] mb-4">
+            <h2 className="text-4xl font-extrabold font-serif italic text-[#2C4D8A] mb-4">
               What Our Learners Say
             </h2>
-            <p className="text-[#3A5785] max-w-2xl mx-auto">
+            <p className="text-[#3A5785] max-w-2xl mx-auto font-sans">
               Join thousands of successful professionals who started their journey with us.
             </p>
           </div>
@@ -299,15 +317,15 @@ export default function Services() {
                     <Star key={i} className="w-4 h-4 fill-current text-[#D4AF37]" />
                   ))}
                 </div>
-                <p className="text-[#191C1E] mb-6 italic text-sm leading-relaxed">"{t.text}"</p>
+                <p className="text-[#191C1E] mb-6 italic text-sm leading-relaxed font-sans">"{t.text}"</p>
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 font-sans"
                     style={{ backgroundColor: t.dark ? '#041632' : '#D4AF37' }}
                   >
                     {t.initials}
                   </div>
-                  <div>
+                  <div className="font-sans">
                     <h4 className="font-bold text-[#2C4D8A] text-sm">{t.name}</h4>
                     <p className="text-xs text-[#3A5785]">{t.role}</p>
                   </div>
@@ -319,43 +337,25 @@ export default function Services() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24 px-6 bg-[#041632] relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#D4AF37]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-400/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/3 pointer-events-none" />
-
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-extrabold font-serif text-white mb-8"
-          >
-            Start Your Confidence Journey Today
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-[#8393B5] mb-12 leading-relaxed font-sans"
-          >
-            Don't wait for opportunities, create them. Join Arambha Skill Solutions and unlock your professional potential.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center"
-          >
-            <button className="bg-white text-[#041632] px-12 py-5 rounded-xl font-extrabold text-lg shadow-2xl hover:scale-105 active:scale-95 transition-all">
-              View Programs
-            </button>
-            <button className="border-2 border-white text-white px-12 py-5 rounded-xl font-extrabold text-lg hover:bg-white hover:text-[#041632] transition-all flex items-center justify-center gap-2">
-              Book Free Demo <ArrowRight className="w-5 h-5" />
-            </button>
-          </motion.div>
+      <section className="py-4">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="brand-gradient-gold rounded-3xl p-12 lg:p-24 text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_#ffffff,_transparent)]"></div>
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-headline-lg font-serif font-extrabold text-primary mb-8 italic">Start Your Confidence Journey Today</h2>
+              <p className="text-primary/80 max-w-2xl mx-auto mb-12 text-lg font-medium font-sans">
+                Join structured live training sessions from anywhere in Karnataka. Transform your communication and career with Arambha's proven system.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center font-serif italic">
+                <Link to="/programs" className="bg-primary text-white px-10 py-4 rounded-xl font-bold hover:brightness-110 transition-all shadow-xl flex items-center justify-center gap-2 group text-lg">
+                  View Programs <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
+                <button className="bg-white text-primary border-2 border-primary px-10 py-4 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-lg">
+                  Book Free Demo <Calendar className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

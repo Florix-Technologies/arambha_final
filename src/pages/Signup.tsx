@@ -27,7 +27,23 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-32 bg-surface">
+    <div className="min-h-screen pt-24 pb-32 bg-surface font-sans">
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
+
+        :root {
+          --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+          --font-serif: "Lora", serif;
+        }
+
+        .font-serif {
+          font-family: var(--font-serif), serif;
+        }
+
+        .font-sans {
+          font-family: var(--font-sans), sans-serif;
+        }
+      `}} />
       <div className="max-w-md mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -36,7 +52,7 @@ export default function Signup() {
           className="bg-white rounded-2xl shadow-xl p-8 border border-slate-100"
         >
           <div className="text-center mb-8">
-            <h1 className="font-serif text-4xl text-primary mb-3 font-bold">Create Account</h1>
+            <h1 className="font-serif text-4xl text-primary mb-3 font-bold italic">Create Account</h1>
             <p className="text-sm text-on-surface-variant font-sans">
               Start your learning journey with Arambha
             </p>
@@ -69,10 +85,10 @@ export default function Signup() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-primary mb-2">
+              <label htmlFor="email" className="block text-sm font-semibold text-primary mb-2 font-sans">
                 Gmail Address
               </label>
-              <div className="relative">
+              <div className="relative font-sans">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" size={20} />
                 <input
                   id="email"
@@ -87,10 +103,10 @@ export default function Signup() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-primary mb-2">
+              <label htmlFor="password" className="block text-sm font-semibold text-primary mb-2 font-sans">
                 Password
               </label>
-              <div className="relative">
+              <div className="relative font-sans">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" size={20} />
                 <input
                   id="password"
@@ -103,7 +119,7 @@ export default function Signup() {
                   minLength={8}
                 />
               </div>
-              <p className="mt-2 text-xs text-on-surface-variant">Must be at least 8 characters</p>
+              <p className="mt-2 text-xs text-on-surface-variant font-sans">Must be at least 8 characters</p>
             </div>
 
             <button
@@ -125,7 +141,7 @@ export default function Signup() {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center font-sans">
             <p className="text-sm text-on-surface-variant">
               Already have an account?{" "}
               <Link to="/login" className="text-accent-gold font-bold hover:underline">
@@ -134,7 +150,7 @@ export default function Signup() {
             </p>
           </div>
 
-          <div className="mt-8 relative">
+          <div className="mt-8 relative font-sans">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200"></div>
             </div>
@@ -144,7 +160,7 @@ export default function Signup() {
           </div>
 
           <div className="mt-6">
-            <button className="w-full flex items-center justify-center px-4 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all gap-3">
+            <button className="w-full flex items-center justify-center px-4 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all gap-3 font-sans">
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"
@@ -167,7 +183,7 @@ export default function Signup() {
             </button>
           </div>
 
-          <p className="mt-6 text-xs text-center text-on-surface-variant">
+          <p className="mt-6 text-xs text-center text-on-surface-variant font-sans">
             By signing up, you agree to our{" "}
             <a href="#" className="text-accent-gold font-semibold hover:underline">
               Terms of Service

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { 
   Building, 
@@ -34,34 +35,7 @@ import {
 
 import hereBg from "../assets/Hero-bg-about.jpeg";
 
-const Navbar = () => (
-  <nav className="top-0 sticky z-50 border-b border-slate-200 bg-white/90 backdrop-blur-md shadow-sm">
-    <div className="flex justify-between items-center max-w-7xl mx-auto px-6 py-4 w-full">
-      <div className="flex items-center gap-3">
-        <img 
-          alt="Arambha Logo" 
-          className="h-12 w-auto object-contain" 
-          src="https://lh3.googleusercontent.com/aida/ADBb0ugAMJp6lNCmZK_6LwONPrXnbthRt5JZewc1cah6BGVdajZj6VSHfGXlwzMwpqdz3_lXEOcZN3v4ZFJajHdbOG5UjX3F_B496UuC-lb6726hs6ja9JlP_sKoxoSVERofGosoJy1L69fkjqa3B9Y7-9plaFIUV8rhxbFQ7YKqaD4UXLV9gYyGnTZR204pQWbGOBvPqjlGlLCRXsOLYXzzh9n9wfPqxrnV7B5ZQ5eK1GFXka7X3Vy4oyS6WSCJ57_ciVPGGB8R57gnCg" 
-        />
-        <div className="text-xl font-extrabold text-primary tracking-tighter font-serif leading-none">
-          Arambha<br/>
-          <span className="text-secondary text-sm font-bold tracking-normal">Skill Solutions</span>
-        </div>
-      </div>
-      <div className="hidden md:flex items-center space-x-8">
-        <a className="font-serif text-sm font-semibold tracking-tight text-on-surface-variant hover:text-primary transition-colors" href="#">Home</a>
-        <a className="font-serif text-sm font-semibold tracking-tight text-primary border-b-2 border-accent-gold pb-1" href="#">About</a>
-        <a className="font-serif text-sm font-semibold tracking-tight text-on-surface-variant hover:text-primary transition-colors" href="#">Programs</a>
-        <a className="font-serif text-sm font-semibold tracking-tight text-on-surface-variant hover:text-primary transition-colors" href="#">Services</a>
-        <a className="font-serif text-sm font-semibold tracking-tight text-on-surface-variant hover:text-primary transition-colors" href="#">Careers</a>
-      </div>
-      <div className="flex items-center space-x-4">
-        <button className="hidden lg:block font-serif text-sm font-semibold text-on-surface-variant hover:text-primary transition-all">Login</button>
-        <button className="brand-gradient-gold text-white px-6 py-2.5 rounded-lg font-serif text-sm font-semibold shadow-md hover:brightness-110 active:scale-95 transition-all">Book a Class</button>
-      </div>
-    </div>
-  </nav>
-);
+// --- Helper Components ---
 
 const Hero = () => (
   <section 
@@ -203,7 +177,7 @@ const Evolution = () => (
   <section className="pt-32 pb-16 bg-white relative overflow-hidden">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-24">
-        <h2 className="text-headline-lg font-serif text-primary mb-4 italic">Our Evolution</h2>
+        <h2 className="text-5xl md:text-6xl font-serif font-extrabold text-primary mb-6 italic">Our Evolution</h2>
         <p className="text-on-surface-variant max-w-lg mx-auto font-sans">Building the Future of Professional Excellence</p>
         <p className="text-on-surface-variant max-w-2xl mx-auto mt-4 font-sans">Explore the key milestones that have shaped Arambha into a global leader in education, technology, and talent mobility.</p>
       </div>
@@ -685,7 +659,7 @@ const Values = () => {
 };
 
 const CTA = () => (
-  <section className="py-32">
+  <section className="py-4">
     <div className="max-w-7xl mx-auto px-6">
       <div className="brand-gradient-gold rounded-3xl p-12 lg:p-24 text-center relative overflow-hidden shadow-2xl">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_#ffffff,_transparent)]"></div>
@@ -695,9 +669,9 @@ const CTA = () => (
             Join structured live training sessions from anywhere in Karnataka. Transform your communication and career with Arambha's proven system.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <button className="bg-primary text-white px-10 py-4 rounded-xl font-bold font-serif hover:brightness-110 transition-all shadow-xl flex items-center justify-center gap-2 group">
+            <Link to="/programs" className="bg-primary text-white px-10 py-4 rounded-xl font-bold font-serif hover:brightness-110 transition-all shadow-xl flex items-center justify-center gap-2 group">
               View Programs <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </button>
+            </Link>
             <button className="bg-white text-primary border-2 border-primary px-10 py-4 rounded-xl font-bold font-serif hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
               Book Free Demo <Calendar className="h-4 w-4" />
             </button>
