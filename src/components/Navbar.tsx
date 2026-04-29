@@ -1,0 +1,247 @@
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Menu, X, LogOut, ShieldCheck, Filter } from "lucide-react";
+import logo from "../assets/ARAMBHA.svg";
+import arambhaText from "../assets/arambha-text.svg";
+import { useAuth } from "../context/AuthContext";
+import { isUserAdmin } from "../services/adminService";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/firebase";
+
+export default function Navbar() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isPortalDropdownOpen, setIsPortalDropdownOpen] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    if (currentUser) {
+      isUserAdmin(currentUser.uid).then(setIsAdmin);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      // Show navbar when scrolling up OR near the top
+      if (currentY < 10 || currentY < lastScrollY.current) {
+        setVisible(true);
+      } else {
+        setVisible(false);
+        setIsMenuOpen(false); // close mobile menu when hiding
+      }
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const navLinks = [
+    { path: "/", label: "Home" },
+    { path: "/about", label: "About" },
+    { path: "/programs", label: "Programs" },
+    { path: "/services", label: "Services" },
+    { path: "/careers", label: "Careers" },
+  ];
+
+  return (
+    <nav
+      className="sticky top-0 z-50 border-b border-slate-100 bg-white/95 backdrop-blur-md shadow-sm transition-transform duration-300 ease-in-out"
+      style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
+    >
+      <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 py-4 w-full">
+        <Link to="/" className="flex items-center gap-2 sm:gap-3">
+          <img
+            alt="Arambha Logo"
+            className="h-10 sm:h-14 w-auto object-contain scale-150"
+            src={logo}
+          />
+          <img
+  src={arambhaText}
+  alt="Arambha Skill Solutions"
+  className="h-12 sm:h-14 w-auto object-contain scale-300 ml-12"
+/>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-8">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              className={`text-sm font-semibold tracking-tight transition-colors pb-1 ${
+                isActive(link.path)
+                  ? 'text-primary border-b-2 border-accent-gold'
+                  : 'text-on-surface-variant hover:text-primary'
+              }`}
+              to={link.path}
+            >
+              {link.label}
+            </Link>
+          ))}
+          {isAdmin && (
+            <div 
+              className="relative group"
+              onMouseEnter={() => setIsPortalDropdownOpen(true)}
+              onMouseLeave={() => setIsPortalDropdownOpen(false)}
+            >
+              <button
+                className={`text-sm font-bold tracking-tight transition-colors pb-1 flex items-center gap-1.5 cursor-pointer ${
+                  location.pathname.startsWith('/admin')
+                    ? 'text-accent-gold border-b-2 border-accent-gold'
+                    : 'text-accent-gold/80 hover:text-accent-gold'
+                }`}
+              >
+                <ShieldCheck size={16} />
+                Portal
+                <Menu size={12} className={`transition-transform duration-200 ${isPortalDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown Menu */}
+              <div className={`absolute left-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-xl transition-all duration-200 origin-top-left ${
+                isPortalDropdownOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+              }`}>
+                <div className="p-2 space-y-1">
+                  <Link
+                    to="/admin/upload"
+                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                      isActive('/admin/upload')
+                        ? 'bg-accent-gold text-white'
+                        : 'text-primary hover:bg-slate-50'
+                    }`}
+                  >
+                    <ShieldCheck size={16} />
+                    Upload Video
+                  </Link>
+                  <Link
+                    to="/admin/manage"
+                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                      isActive('/admin/manage')
+                        ? 'bg-accent-gold text-white'
+                        : 'text-primary hover:bg-slate-50'
+                    }`}
+                  >
+                    <Filter size={16} />
+                    Manage Courses
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop CTA Buttons */}
+        <div className="hidden md:flex items-center space-x-4">
+          {!currentUser ? (
+            <Link to="/login" className="hidden lg:block text-sm font-semibold text-on-surface-variant hover:text-primary transition-all">Login</Link>
+          ) : (
+            <button 
+              onClick={() => signOut(auth).then(() => navigate('/'))}
+              className="hidden lg:flex items-center gap-2 text-sm font-semibold text-red-500 hover:text-red-600 transition-all cursor-pointer"
+            >
+              <LogOut size={16} />
+              Logout
+            </button>
+          )}
+          <button className="brand-gradient-gold text-white px-4 lg:px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md hover:brightness-110 active:scale-95 transition-all whitespace-nowrap">
+            Book a Class
+          </button>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="md:hidden p-2 text-primary hover:bg-slate-100 rounded-lg transition-colors"
+          aria-label="Toggle menu"
+        >
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden border-t border-slate-100 bg-white">
+          <div className="max-w-7xl mx-auto px-4 py-4 space-y-3">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                className={`block px-4 py-3 rounded-lg font-semibold transition-all ${
+                  isActive(link.path)
+                    ? 'bg-accent-gold text-white'
+                    : 'text-on-surface-variant hover:bg-slate-50'
+                }`}
+                to={link.path}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            {isAdmin && (
+              <div className="space-y-3">
+                <Link
+                  to="/admin/upload"
+                  className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${
+                    isActive('/admin/upload')
+                      ? 'bg-accent-gold text-white'
+                      : 'text-accent-gold hover:bg-accent-gold/5'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <ShieldCheck size={20} />
+                  Upload Video
+                </Link>
+                <Link
+                  to="/admin/manage"
+                  className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${
+                    isActive('/admin/manage')
+                      ? 'bg-accent-gold text-white'
+                      : 'text-accent-gold hover:bg-accent-gold/5'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Filter size={20} />
+                  Manage Courses
+                </Link>
+              </div>
+            )}
+            {!currentUser ? (
+              <Link
+                to="/login"
+                className="block px-4 py-3 rounded-lg font-semibold text-on-surface-variant hover:bg-slate-50 transition-all"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Login
+              </Link>
+            ) : (
+              <button
+                onClick={() => {
+                  signOut(auth).then(() => {
+                    navigate('/');
+                    setIsMenuOpen(false);
+                  });
+                }}
+                className="w-full flex items-center gap-2 px-4 py-3 rounded-lg font-semibold text-red-500 hover:bg-red-50 transition-all"
+              >
+                <LogOut size={20} />
+                Logout
+              </button>
+            )}
+            <button className="w-full brand-gradient-gold text-white px-6 py-3 rounded-lg font-semibold shadow-md">
+              Book a Class
+            </button>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}

@@ -1,0 +1,283 @@
+/* Styles for redesigned Our Services hero */
+.services-hero {
+  background: #f8f9fb;
+}
+
+.services-hero__inner {}
+
+.services-hero__grid {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.hero-left {
+  flex: 1 1 55%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 320px;
+}
+
+.hero-left__blob {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(closest-side, #e6f0ff 0%, rgba(230, 240, 255, 0.4) 40%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(28px);
+  z-index: 6;
+  right: 8%;
+  top: 10%;
+  pointer-events: none;
+}
+
+.image-orbit {
+  width: 100%;
+  max-width: 600px;
+  height: 420px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-card {
+  width: 550px;
+  height: 600px;
+  overflow: hidden;
+  background-color: #f8f9fb;
+  position: center;
+  z-index: 30;
+}
+
+.main-card {
+  width: 520px;
+  height: 500px;
+  /* 🔥 reduce height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.feature-card {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 10px 12px;
+  min-width: 130px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  box-shadow: 0 12px 36px rgba(14, 30, 80, 0.06);
+  z-index: 40;
+  transform-origin: center;
+}
+
+.feature-card .fc-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: linear-gradient(180deg, #eef6ff, #ffffff);
+}
+
+.feature-card .fc-text {
+  font-size: 13px;
+  color: #1B2B48;
+  font-weight: 600;
+  line-height: 1.05
+}
+
+.fc-1 {
+  top: 6%;
+  left: 4%;
+  transform: rotate(-6deg);
+}
+
+.fc-2 {
+  top: 12%;
+  right: 6%;
+  transform: rotate(6deg);
+}
+
+.fc-3 {
+  bottom: 10%;
+  left: 8%;
+  transform: rotate(-4deg);
+}
+
+.fc-4 {
+  bottom: 8%;
+  right: 10%;
+  transform: rotate(4deg);
+}
+
+.fc-5 {
+  top: 42%;
+  right: 46%;
+  transform: translate(24px, -30px) rotate(-2deg);
+}
+
+.connectors {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 8;
+  pointer-events: none;
+}
+
+.dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(2, 54, 123, 0.12);
+  z-index: 7
+}
+
+.dot-a {
+  left: 12%;
+  top: 16%;
+}
+
+.dot-b {
+  right: 10%;
+  top: 36%;
+  background: rgba(212, 175, 55, 0.12);
+}
+
+.dot-c {
+  left: 22%;
+  bottom: 14%;
+  background: rgba(34, 124, 255, 0.08);
+}
+
+.hero-right {
+  flex: 1 1 40%;
+  min-width: 280px;
+  padding-left: 18px;
+  margin-left: -60px;
+  z-index: 50;
+}
+
+.hero-title {
+  font-family: 'Lora', serif;
+  font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+  font-weight: 800;
+  margin: 0 0 16px 0;
+  line-height: 1.05
+}
+
+.hero-title .our {
+  color: #1B2B48
+}
+
+.hero-title .services-gold {
+  color: #D4AF37
+}
+
+.hero-sub {
+  color: #3A5785;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 22px;
+  max-width: 620px
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap
+}
+
+.btn {
+  padding: 14px 26px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 2px solid transparent
+}
+
+.btn-primary {
+  background: #02367B;
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(2, 54, 123, 0.18)
+}
+
+.btn-outline {
+  background: transparent;
+  color: #1B2B48;
+  border-color: #1B2B48
+}
+
+/* Responsiveness */
+@media (max-width: 900px) {
+  .services-hero__grid {
+    flex-direction: column-reverse;
+    gap: 20px
+  }
+
+  .hero-left {
+    order: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center
+  }
+
+  .hero-right {
+    order: 1;
+    text-align: center;
+    padding-left: 0
+  }
+
+  .main-card {
+    width: 300px;
+    height: 360px
+  }
+
+  .image-orbit {
+    height: 380px
+  }
+
+  .fc-1,
+  .fc-2,
+  .fc-3,
+  .fc-4,
+  .fc-5 {
+    min-width: 110px
+  }
+}
+
+@media (max-width: 480px) {
+  .main-card {
+    width: 260px;
+    height: 320px
+  }
+
+  .hero-title {
+    font-size: 1.8rem
+  }
+
+  .feature-card {
+    padding: 8px 10px
+  }
+}
+
+/* small accessibility helper: reduce motion if user prefers */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important
+  }
+}

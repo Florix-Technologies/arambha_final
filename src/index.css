@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;0,800;1,600;1,700&family=Cinzel:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Lora", ui-serif, Georgia, serif;
+
+  --color-primary: #1B2B48;
+  --color-secondary: #D4AF37;
+  --color-accent-gold: #D4AF37;
+  --color-navy-deep: #10192A;
+  --color-navy-light: #2A3F65;
+  --color-surface: #f7f9fb;
+  --color-on-surface: #1B2B48;
+  --color-on-surface-variant: #475569;
+  --color-background: #ffffff;
+  --color-outline-variant: #E2E8F0;
+
+  --animate-scroll: scroll 2s linear infinite;
+
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-background text-primary;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+  
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.brand-gradient-navy {
+  background: linear-gradient(135deg, #1B2B48 0%, #10192A 100%);
+}
+
+.brand-gradient-gold {
+  background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+}

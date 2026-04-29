@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp \"c:/Users/Ankita/Downloads/Spoken.jpeg\" \"M:/Florix technologies/arambha-skill-solutions \\(3\\)/arambha-skill-solutions \\(2\\)/arambha-skill-solutions/src/assets/programs/spoken-english-mastery.jpg\")",
+      "Bash(cp \"c:/Users/Ankita/Downloads/fundation 60.jpeg\" \"M:/Florix technologies/arambha-skill-solutions \\(3\\)/arambha-skill-solutions \\(2\\)/arambha-skill-solutions/src/assets/programs/foundation-60.jpg\")",
+      "Bash(cp \"c:/Users/Ankita/Downloads/fsd.jpeg\" \"M:/Florix technologies/arambha-skill-solutions \\(3\\)/arambha-skill-solutions \\(2\\)/arambha-skill-solutions/src/assets/programs/full-stack-java.jpg\")",
+      "Bash(cp \"c:/Users/Ankita/Downloads/final.png\" \"M:/Florix technologies/arambha-skill-solutions \\(3\\)/arambha-skill-solutions \\(2\\)/arambha-skill-solutions/src/assets/hero-students.png\")",
+      "Bash(npx tsc:*)",
+      "Bash(cp \"c:/Users/Ankita/Downloads/Skill certification.jpeg\" \"M:/Florix technologies/arambha-skill-solutions \\(3\\)/arambha-skill-solutions \\(2\\)/arambha-skill-solutions/src/assets/services/skill-certification.jpg\")",
+      "Bash(cp \"c:/Users/Ankita/Downloads/Manpower solutions.jpeg\" \"M:/Florix technologies/arambha-skill-solutions \\(3\\)/arambha-skill-solutions \\(2\\)/arambha-skill-solutions/src/assets/services/manpower-solutions.jpg\")",
+      "Bash(cp \"c:/Users/Ankita/Downloads/Admisiion support.jpeg\" \"M:/Florix technologies/arambha-skill-solutions \\(3\\)/arambha-skill-solutions \\(2\\)/arambha-skill-solutions/src/assets/services/admission-support.jpg\")",
+      "Bash(cp \"c:/Users/Ankita/Downloads/Training for skilled and Unskilled.jpeg\" \"M:/Florix technologies/arambha-skill-solutions \\(3\\)/arambha-skill-solutions \\(2\\)/arambha-skill-solutions/src/assets/services/training-workforce.jpg\")",
+      "Bash(cp \"c:/Users/Ankita/Downloads/Placemnt Assistantnce.jpeg\" \"M:/Florix technologies/arambha-skill-solutions \\(3\\)/arambha-skill-solutions \\(2\\)/arambha-skill-solutions/src/assets/services/placement-assistance.jpg\")",
+      "Bash(npm run build:*)"
+    ]
+  }
+}

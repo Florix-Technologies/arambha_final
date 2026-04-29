@@ -1,0 +1,355 @@
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { getCourses, deleteCourse, updateCourse, Course } from '../../services/courseService';
+import { useNavigate } from 'react-router-dom';
+import { 
+  Trash2, 
+  Search, 
+  Loader2, 
+  Video, 
+  Calendar,
+  AlertCircle,
+  CheckCircle2,
+  Pencil,
+  UploadCloud,
+  X,
+  Save
+} from 'lucide-react';
+
+export default function ManageCourses() {
+  const navigate = useNavigate();
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [editCourse, setEditCourse] = useState<Course | null>(null);
+  const [editVideoId, setEditVideoId] = useState('');
+  const [editVideoTitle, setEditVideoTitle] = useState('');
+  const [editSaving, setEditSaving] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    setLoading(true);
+    try {
+      const data = await getCourses();
+      setCourses(data);
+    } catch (err) {
+      console.error(err);
+      setMessage({ type: 'error', text: 'Failed to load courses.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteCourse(id);
+      setCourses(courses.filter(c => c.id !== id));
+      setMessage({ type: 'success', text: 'Course deleted successfully.' });
+      setDeleteId(null);
+    } catch (err) {
+      console.error(err);
+      setMessage({ type: 'error', text: 'Failed to delete course.' });
+    }
+  };
+
+  const openEdit = (course: Course) => {
+    setEditCourse(course);
+    setEditVideoId(course.videoId || '');
+    setEditVideoTitle(course.videoTitle || course.title || '');
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editCourse) return;
+    if (!editVideoId.trim()) {
+      setMessage({ type: 'error', text: 'Video ID cannot be empty.' });
+      return;
+    }
+    setEditSaving(true);
+    try {
+      await updateCourse(editCourse.id, {
+        videoId: editVideoId.trim(),
+        videoTitle: editVideoTitle.trim() || editCourse.title,
+        uploadStatus: 'completed'
+      });
+      setCourses(courses.map(c =>
+        c.id === editCourse.id
+          ? { ...c, videoId: editVideoId.trim(), videoTitle: editVideoTitle.trim(), uploadStatus: 'completed' }
+          : c
+      ));
+      setMessage({ type: 'success', text: 'Course video info updated successfully.' });
+      setEditCourse(null);
+    } catch (err) {
+      setMessage({ type: 'error', text: 'Failed to save changes.' });
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
+  const filteredCourses = courses.filter(c =>
+    c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (c.category && c.category.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  return (
+    <div className="min-h-screen pt-24 pb-20 bg-surface px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
+          <div>
+            <h1 className="font-serif text-4xl font-bold text-primary mb-2">Manage Courses</h1>
+            <p className="text-on-surface-variant">Review, edit, and manage your uploaded content.</p>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input
+                type="text"
+                placeholder="Search courses..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-12 pr-6 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-accent-gold outline-none transition-all w-64 md:w-80"
+              />
+            </div>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {message && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className={`mb-8 p-4 rounded-xl flex items-center gap-3 ${
+                message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+              }`}
+            >
+              {message.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+              {message.text}
+              <button onClick={() => setMessage(null)} className="ml-auto hover:opacity-70">
+                <X size={16} />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
+            <Loader2 className="w-12 h-12 text-accent-gold animate-spin mb-4" />
+            <p className="text-primary font-bold">Synchronizing database...</p>
+          </div>
+        ) : filteredCourses.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredCourses.map((course) => (
+              <motion.div
+                key={course.id}
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl transition-all group"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="w-12 h-12 bg-accent-gold/10 rounded-2xl flex items-center justify-center text-accent-gold">
+                    <Video size={24} />
+                  </div>
+                  <div className="flex gap-2">
+                    {/* Edit button */}
+                    <button
+                      onClick={() => openEdit(course)}
+                      title="Edit video info"
+                      className="p-2 text-slate-400 hover:text-accent-gold hover:bg-yellow-50 rounded-lg transition-colors"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                    {/* Re-upload button */}
+                    <button
+                      onClick={() => navigate(`/admin/upload?courseId=${course.id}&courseName=${encodeURIComponent(course.title)}`)}
+                      title="Re-upload video"
+                      className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                    >
+                      <UploadCloud size={18} />
+                    </button>
+                    {/* Delete button */}
+                    <button
+                      onClick={() => setDeleteId(course.id)}
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-bold text-primary mb-2 line-clamp-1">{course.title}</h3>
+                <div className="flex flex-wrap gap-3 mb-4">
+                  <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 bg-slate-100 text-slate-600 rounded">
+                    {course.category || 'General'}
+                  </span>
+                  <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded ${
+                    course.uploadStatus === 'completed' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600'
+                  }`}>
+                    {course.uploadStatus}
+                  </span>
+                </div>
+
+                {/* Video info */}
+                {course.videoId ? (
+                  <div className="text-xs text-slate-500 bg-slate-50 rounded-xl px-3 py-2 mb-4 font-mono truncate">
+                    🎬 {course.videoTitle || course.videoId}
+                  </div>
+                ) : (
+                  <div className="text-xs text-yellow-600 bg-yellow-50 rounded-xl px-3 py-2 mb-4 flex items-center gap-2">
+                    <AlertCircle size={12} /> No video attached
+                  </div>
+                )}
+
+                <div className="space-y-3 pt-4 border-t border-slate-50">
+                  <div className="flex items-center gap-2 text-sm text-on-surface-variant">
+                    <Calendar size={14} />
+                    <span>{course.createdAt?.toDate ? course.createdAt.toDate().toLocaleDateString() : 'Just now'}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
+            <Video className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+            <p className="text-primary font-bold text-lg">No courses found.</p>
+            <p className="text-on-surface-variant mt-2">Start by uploading a new video.</p>
+          </div>
+        )}
+      </div>
+
+      {/* ── Edit Video Info Modal ── */}
+      <AnimatePresence>
+        {editCourse && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+              onClick={() => setEditCourse(null)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg bg-white rounded-3xl p-8 shadow-2xl"
+            >
+              <button
+                onClick={() => setEditCourse(null)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
+              >
+                <X size={18} />
+              </button>
+
+              <div className="w-14 h-14 bg-accent-gold/10 rounded-2xl flex items-center justify-center text-accent-gold mb-5">
+                <Pencil size={26} />
+              </div>
+              <h3 className="text-2xl font-bold text-primary mb-1">Edit Video Info</h3>
+              <p className="text-on-surface-variant text-sm mb-6">
+                Manually set the Google Drive <strong>videoId</strong> and <strong>videoTitle</strong> for:<br />
+                <span className="font-bold text-primary">{editCourse.title}</span>
+              </p>
+
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-primary mb-2">
+                    Google Drive File ID
+                  </label>
+                  <input
+                    type="text"
+                    value={editVideoId}
+                    onChange={e => setEditVideoId(e.target.value)}
+                    placeholder="e.g. 1l3Ppsow04PZnHzryBzbUobGAaeag4P47"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-accent-gold outline-none font-mono text-sm"
+                  />
+                  <p className="text-xs text-slate-400 mt-1">
+                    Find this in your Google Drive URL: <code>drive.google.com/file/d/<strong>[ID]</strong>/view</code>
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-primary mb-2">
+                    Video Title
+                  </label>
+                  <input
+                    type="text"
+                    value={editVideoTitle}
+                    onChange={e => setEditVideoTitle(e.target.value)}
+                    placeholder="e.g. Digital Marketing Expert - Module 1"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-accent-gold outline-none text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-4 mt-8">
+                <button
+                  onClick={() => setEditCourse(null)}
+                  className="flex-1 py-4 bg-slate-100 text-primary font-bold rounded-2xl hover:bg-slate-200 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveEdit}
+                  disabled={editSaving || !editVideoId.trim()}
+                  className="flex-1 py-4 bg-accent-gold text-white font-bold rounded-2xl hover:brightness-110 shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale"
+                >
+                  {editSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                  {editSaving ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Delete Confirm Modal ── */}
+      <AnimatePresence>
+        {deleteId && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+              onClick={() => setDeleteId(null)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-md bg-white rounded-3xl p-8 shadow-2xl"
+            >
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-red-600 mx-auto mb-6">
+                <Trash2 size={32} />
+              </div>
+              <h3 className="text-2xl font-bold text-center text-primary mb-2">Delete Course?</h3>
+              <p className="text-center text-on-surface-variant mb-8">
+                This action cannot be undone. All video data and Firestore records will be permanently removed.
+              </p>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setDeleteId(null)}
+                  className="flex-1 py-4 bg-slate-100 text-primary font-bold rounded-2xl hover:bg-slate-200 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(deleteId)}
+                  className="flex-1 py-4 bg-red-600 text-white font-bold rounded-2xl hover:bg-red-700 shadow-lg shadow-red-200 transition-all"
+                >
+                  Confirm Delete
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
