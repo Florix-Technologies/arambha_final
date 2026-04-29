@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { LayoutDashboard, Upload, Settings, ShieldCheck, ChevronRight } from "lucide-react";
+import { LayoutDashboard, PlusCircle, Settings, ShieldCheck, ChevronRight, Briefcase } from "lucide-react";
 import ManageCourses from "./ManageCourses";
-import ChunkedUpload from "./ChunkedUpload";
+import CreateCourse from "./CreateCourse";
+import ManageCareers from "./ManageCareers";
+import CreateCareer from "./CreateCareer";
 import { useLocation, useNavigate } from "react-router-dom";
 
-type TabType = "manage" | "upload";
+type TabType = "manage" | "create" | "manage-careers" | "create-career";
 
 export default function AdminPortal() {
   const location = useLocation();
@@ -15,14 +17,19 @@ export default function AdminPortal() {
   // Handle URL params if coming from a "Re-upload" link
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    if (params.get("courseId")) {
-      setActiveTab("upload");
+    const tab = params.get("tab");
+    if (tab && ["manage", "create", "manage-careers", "create-career"].includes(tab)) {
+      setActiveTab(tab as TabType);
+    } else if (params.get("courseId")) {
+      setActiveTab("create");
     }
   }, [location]);
 
   const tabs = [
     { id: "manage", label: "Manage Courses", icon: LayoutDashboard },
-    { id: "upload", label: "Upload Content", icon: Upload },
+    { id: "create", label: "Create Course", icon: PlusCircle },
+    { id: "manage-careers", label: "Manage Careers", icon: Briefcase },
+    { id: "create-career", label: "Post Job", icon: PlusCircle },
   ];
 
   return (
@@ -38,7 +45,11 @@ export default function AdminPortal() {
               <div>
                 <h1 className="text-2xl font-serif font-extrabold text-primary">Admin Control Center</h1>
                 <p className="text-sm text-on-surface-variant flex items-center gap-1">
-                  Arambha LMS <ChevronRight size={14} /> {activeTab === "manage" ? "Course Management" : "Content Upload"}
+                  Arambha LMS <ChevronRight size={14} /> 
+                  {activeTab === "manage" && "Course Management"}
+                  {activeTab === "create" && "New Course Deployment"}
+                  {activeTab === "manage-careers" && "Talent Management"}
+                  {activeTab === "create-career" && "Career Posting"}
                 </p>
               </div>
             </div>
@@ -74,11 +85,10 @@ export default function AdminPortal() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
           >
-            {activeTab === "manage" ? (
-              <ManageCourses />
-            ) : (
-              <ChunkedUpload />
-            )}
+            {activeTab === "manage" && <ManageCourses />}
+            {activeTab === "create" && <CreateCourse />}
+            {activeTab === "manage-careers" && <ManageCareers />}
+            {activeTab === "create-career" && <CreateCareer />}
           </motion.div>
         </AnimatePresence>
       </main>

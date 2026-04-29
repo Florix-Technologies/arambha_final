@@ -16,6 +16,29 @@ import {
   Save
 } from 'lucide-react';
 
+// Import program images for consistent branding
+import spokenEnglishImg from "../../assets/programs/spoken-english-mastery.png";
+import foundation60Img from "../../assets/programs/foundation-60.png";
+import digitalMarketingImg from "../../assets/programs/digital-marketing-expert.png";
+import campusToCorporateImg from "../../assets/programs/campus-to-corporate.png";
+import hrManagementImg from "../../assets/programs/hr-management.png";
+import bankingFinanceImg from "../../assets/programs/banking-finance.png";
+import fullStackJavaImg from "../../assets/programs/full-stack-java.png";
+import dataScienceImg from "../../assets/programs/data-science-ai.png";
+import autocadImg from "../../assets/programs/autocad-design.png";
+
+const IMAGE_MAP: Record<string, any> = {
+  "Spoken English Mastery": spokenEnglishImg,
+  "Foundation 60": foundation60Img,
+  "Digital Marketing Expert": digitalMarketingImg,
+  "Campus to Corporate Program": campusToCorporateImg,
+  "Human Resource Management": hrManagementImg,
+  "Banking & Finance Masterclass": bankingFinanceImg,
+  "Full Stack Java Developer": fullStackJavaImg,
+  "Data Science & AI": dataScienceImg,
+  "AutoCAD Design": autocadImg,
+};
+
 export default function ManageCourses() {
   const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
@@ -152,16 +175,20 @@ export default function ManageCourses() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl transition-all group"
               >
-                <div className="flex justify-between items-start mb-6">
-                  <div className="w-12 h-12 bg-accent-gold/10 rounded-2xl flex items-center justify-center text-accent-gold">
-                    <Video size={24} />
-                  </div>
-                  <div className="flex gap-2">
+                <div className="relative aspect-video overflow-hidden rounded-t-3xl -mx-6 -mt-6 mb-6 group-hover:scale-[1.02] transition-transform duration-500 bg-slate-100">
+                  <img 
+                    src={IMAGE_MAP[course.title] || course.image || fullStackJavaImg} 
+                    alt={course.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                  
+                  <div className="absolute top-4 right-4 flex gap-2">
                     {/* Edit button */}
                     <button
                       onClick={() => openEdit(course)}
                       title="Edit video info"
-                      className="p-2 text-slate-400 hover:text-accent-gold hover:bg-yellow-50 rounded-lg transition-colors"
+                      className="p-2 bg-white/20 backdrop-blur-md text-white hover:bg-accent-gold rounded-lg transition-all border border-white/30"
                     >
                       <Pencil size={18} />
                     </button>
@@ -169,17 +196,23 @@ export default function ManageCourses() {
                     <button
                       onClick={() => navigate(`/admin/upload?courseId=${course.id}&courseName=${encodeURIComponent(course.title)}`)}
                       title="Re-upload video"
-                      className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                      className="p-2 bg-white/20 backdrop-blur-md text-white hover:bg-blue-500 rounded-lg transition-all border border-white/30"
                     >
                       <UploadCloud size={18} />
                     </button>
                     {/* Delete button */}
                     <button
                       onClick={() => setDeleteId(course.id)}
-                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-2 bg-white/20 backdrop-blur-md text-white hover:bg-red-500 rounded-lg transition-all border border-white/30"
                     >
                       <Trash2 size={18} />
                     </button>
+                  </div>
+
+                  <div className="absolute bottom-4 left-4">
+                     <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-white border border-white/30">
+                        <Video size={20} />
+                     </div>
                   </div>
                 </div>
 
