@@ -1,7 +1,7 @@
 import { Facebook, Twitter, Instagram, Linkedin, MapPin, Phone, Mail } from "lucide-react";
 import logo from "../assets/ARAMBHA.svg";
 import arambhaText from "../assets/arambha-text.svg";
-
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -30,8 +30,8 @@ export default function Footer() {
             </a>
           </div>
         </div>
-        <FooterSection title="Quick Links" links={["About Arambha", "Skill Programs", "Career Launchpad", "Native Language Support"]} />
-        <FooterSection title="Legal & Support" links={["Contact Support", "Partner Network", "Privacy Policy", "Terms of Service"]} />
+        <FooterSection title="Quick Links" links={["About Arambha", "Skill Programs", "Career Launchpad"]} />
+        <FooterSection title="Legal & Support" links={["Contact Support", "Partner Network", "Privacy Policy", "Terms of Service"]} isLegalSupport={true} />
         <div>
           <h4 className="font-bold text-primary mb-6 font-serif text-base uppercase tracking-wider">Contact Us</h4>
           <div className="space-y-4 text-sm text-on-surface-variant font-sans">
@@ -49,14 +49,36 @@ export default function Footer() {
   );
 }
 
-function FooterSection({ title, links }: { title: string, links: string[] }) {
+function FooterSection({ title, links, isLegalSupport = false }: { title: string, links: string[], isLegalSupport?: boolean }) {
   return (
     <div>
       <h4 className="font-bold text-primary mb-6 font-serif text-base uppercase tracking-wider">{title}</h4>
       <ul className="space-y-4">
         {links.map((link, i) => (
           <li key={i}>
-            <a className="text-on-surface-variant hover:text-accent-gold hover:translate-x-1 transition-all text-sm inline-block font-sans" href="#">{link}</a>
+            {isLegalSupport ? (
+              <Link
+                to="/legal-support"
+                className="text-on-surface-variant hover:text-accent-gold hover:translate-x-1 transition-all text-sm inline-block font-sans"
+              >
+                {link}
+              </Link>
+            ) : (
+              <Link
+                to={
+                  link === "About Arambha"
+                    ? "/about"
+                    : link === "Skill Programs"
+                    ? "/programs"
+                    : link === "Career Launchpad"
+                    ? "/careers"
+                    : "/"
+                }
+                className="text-on-surface-variant hover:text-accent-gold hover:translate-x-1 transition-all text-sm inline-block font-sans"
+              >
+                {link}
+              </Link>
+            )}
           </li>
         ))}
       </ul>
