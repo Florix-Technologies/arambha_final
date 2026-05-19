@@ -26,6 +26,7 @@ async def contact_us(req: ContactRequest):
         inquiry_ref = db.collection('inquiries').document()
         inquiry_data = {
             **req.dict(),
+            "read": False,
             "created_at": firestore.SERVER_TIMESTAMP
         }
         inquiry_ref.set(inquiry_data)

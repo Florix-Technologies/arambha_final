@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc, collection, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { motion, AnimatePresence } from "motion/react";
 import { LayoutDashboard, PlusCircle, Settings, ShieldCheck, ChevronRight, Briefcase, Users, FileText, MessageSquare, BookOpen, Video } from "lucide-react";
@@ -21,6 +21,7 @@ export default function AdminPortal() {
   const [activeTab, setActiveTab] = useState<TabType>("manage");
 
   const [stats, setStats] = useState({ total_enrollments: 0, total_applications: 0, total_contacts: 0 });
+  const [unreadInquiriesCount, setUnreadInquiriesCount] = useState(0);
 
   // Handle URL params if coming from a "Re-upload" link
   useEffect(() => {
@@ -60,7 +61,17 @@ export default function AdminPortal() {
       setStats(prev => ({ ...prev, total_enrollments: mockEnrollments.length }));
     });
 
-    return () => unsubscribe();
+    const qInquiries = query(collection(db, "inquiries"), where("read", "==", false));
+    const unsubscribeInquiries = onSnapshot(qInquiries, (snapshot) => {
+      setUnreadInquiriesCount(snapshot.size);
+    }, (err) => {
+      console.error("Unread inquiries listener error:", err);
+    });
+
+    return () => {
+      unsubscribe();
+      unsubscribeInquiries();
+    };
   }, []);
 
   const tabs = [
@@ -99,21 +110,30 @@ export default function AdminPortal() {
             </div>
 
             {/* Tab Switcher */}
-            <div className="flex p-1 bg-slate-100 rounded-xl w-fit">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as TabType)}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                    activeTab === tab.id
-                      ? "bg-white text-primary shadow-sm"
-                      : "text-on-surface-variant hover:text-primary"
-                  }`}
-                >
-                  <tab.icon size={18} />
-                  {tab.label}
-                </button>
-              ))}
+            <div className="flex p-1 bg-slate-100 rounded-xl w-fit flex-wrap gap-1">
+              {tabs.map((tab) => {
+                const isContactTab = tab.id === "inquiries";
+                const hasUnread = isContactTab && unreadInquiriesCount > 0;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as TabType)}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all relative ${
+                      activeTab === tab.id
+                        ? "bg-white text-primary shadow-sm"
+                        : "text-on-surface-variant hover:text-primary"
+                    }`}
+                  >
+                    <tab.icon size={18} />
+                    <span>{tab.label}</span>
+                    {hasUnread && (
+                      <span className="flex h-5.5 w-5.5 items-center justify-center rounded-full bg-accent-gold text-[10px] font-black text-primary animate-pulse ml-1">
+                        {unreadInquiriesCount}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -138,12 +158,24 @@ export default function AdminPortal() {
               </div>
             </div>
             <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex items-center gap-4">
-              <div className="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center relative">
                 <MessageSquare size={20} />
+                {unreadInquiriesCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-accent-gold text-[9px] font-black text-primary animate-pulse">
+                    {unreadInquiriesCount}
+                  </span>
+                )}
               </div>
-              <div>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Website Inquiries</p>
-                <h4 className="text-xl font-bold text-primary">{stats.total_contacts}</h4>
+              <div className="flex-1 flex justify-between items-center">
+                <div>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Website Inquiries</p>
+                  <h4 className="text-xl font-bold text-primary">{stats.total_contacts}</h4>
+                </div>
+                {unreadInquiriesCount > 0 && (
+                  <span className="text-[10px] font-bold text-accent-gold bg-accent-gold/10 px-2.5 py-1 rounded-full border border-accent-gold/20 uppercase tracking-wider animate-bounce">
+                    {unreadInquiriesCount} New
+                  </span>
+                )}
               </div>
             </div>
           </div>
