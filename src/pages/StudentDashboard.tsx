@@ -92,6 +92,24 @@ export default function StudentDashboard() {
     });
   };
 
+  // Calculate metrics
+  const metrics = {
+    enrolled: enrolledCourses.length,
+    completed: enrolledCourses.filter((c: any) => c.status === 'completed').length,
+    inProgress: enrolledCourses.filter((c: any) => c.status === 'in-progress' || !c.status).length,
+    activeWebinars: activeWebinars.length,
+    upcomingWebinars: upcomingWebinars.length,
+  };
+
+  // Filter courses based on search
+  const filteredCourses = enrolledCourses.filter((course: any) =>
+    course.course_title?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredWebinars = [...activeWebinars, ...upcomingWebinars].filter((webinar: any) =>
+    webinar.title?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pt-24 pb-20">
@@ -107,7 +125,7 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pt-24 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pt-32 pb-20">
       <div className="max-w-6xl mx-auto px-4">
         {/* Header and Tabs */}
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -164,12 +182,13 @@ export default function StudentDashboard() {
               <BookOpen size={18} className="text-blue-600" />
             </div>
             <h2 className="text-2xl font-bold text-primary">My Courses</h2>
+            <span className="text-slate-500 text-sm">({filteredCourses.length})</span>
           </div>
 
-          {enrolledCourses.length > 0 ? (
+          {filteredCourses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {enrolledCourses.map((course, index) => (
-                <div key={index} className="bg-white p-6 rounded-2xl shadow-md border border-slate-100">
+              {filteredCourses.map((course, index) => (
+                <div key={index} className="bg-white p-6 rounded-2xl shadow-md border border-slate-100 hover:shadow-lg transition-all">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="font-bold text-lg text-primary">{course.course_title}</h3>
                     <span className="bg-green-100 text-green-700 text-[10px] uppercase font-bold px-2 py-1 rounded">Paid</span>
@@ -182,7 +201,9 @@ export default function StudentDashboard() {
           ) : (
             <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
               <BookOpen size={48} className="mx-auto text-slate-300 mb-4" />
-              <p className="text-slate-500">You haven't enrolled in any courses yet.</p>
+              <p className="text-slate-500">
+                {searchQuery ? 'No courses match your search' : "You haven't enrolled in any courses yet."}
+              </p>
             </div>
           )}
         </div>
@@ -199,13 +220,14 @@ export default function StudentDashboard() {
               <PlayCircle size={18} className="text-red-600" />
             </div>
             <h2 className="text-2xl font-bold text-primary">
-              Active Now {activeWebinars.length > 0 && `(${activeWebinars.length})`}
+              Active Now {searchQuery && filteredWebinars.filter((w: any) => activeWebinars.some(aw => aw.id === w.id)).length > 0 && `(${filteredWebinars.filter((w: any) => activeWebinars.some(aw => aw.id === w.id)).length})`}
+              {!searchQuery && activeWebinars.length > 0 && `(${activeWebinars.length})`}
             </h2>
           </div>
 
-          {activeWebinars.length > 0 ? (
+          {(searchQuery ? filteredWebinars.filter((w: any) => activeWebinars.some(aw => aw.id === w.id)) : activeWebinars).length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {activeWebinars.map((webinar, index) => (
+              {(searchQuery ? filteredWebinars.filter((w: any) => activeWebinars.some(aw => aw.id === w.id)) : activeWebinars).map((webinar, index) => (
                 <motion.div
                   key={webinar.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -264,7 +286,9 @@ export default function StudentDashboard() {
           ) : (
             <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
               <PlayCircle size={48} className="mx-auto text-slate-300 mb-4" />
-              <p className="text-slate-500">No active webinars right now</p>
+              <p className="text-slate-500">
+                {searchQuery ? 'No active webinars match your search' : 'No active webinars right now'}
+              </p>
             </div>
           )}
         </motion.div>
@@ -280,13 +304,14 @@ export default function StudentDashboard() {
               <Calendar size={18} className="text-blue-600" />
             </div>
             <h2 className="text-2xl font-bold text-primary">
-              Upcoming {upcomingWebinars.length > 0 && `(${upcomingWebinars.length})`}
+              Upcoming {searchQuery && filteredWebinars.filter((w: any) => upcomingWebinars.some(uw => uw.id === w.id)).length > 0 && `(${filteredWebinars.filter((w: any) => upcomingWebinars.some(uw => uw.id === w.id)).length})`}
+              {!searchQuery && upcomingWebinars.length > 0 && `(${upcomingWebinars.length})`}
             </h2>
           </div>
 
-          {upcomingWebinars.length > 0 ? (
+          {(searchQuery ? filteredWebinars.filter((w: any) => upcomingWebinars.some(uw => uw.id === w.id)) : upcomingWebinars).length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcomingWebinars.map((webinar, index) => (
+              {(searchQuery ? filteredWebinars.filter((w: any) => upcomingWebinars.some(uw => uw.id === w.id)) : upcomingWebinars).map((webinar, index) => (
                 <motion.div
                   key={webinar.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -344,7 +369,9 @@ export default function StudentDashboard() {
           ) : (
             <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
               <Calendar size={48} className="mx-auto text-slate-300 mb-4" />
-              <p className="text-slate-500">No upcoming webinars scheduled</p>
+              <p className="text-slate-500">
+                {searchQuery ? 'No upcoming webinars match your search' : 'No upcoming webinars scheduled'}
+              </p>
             </div>
           )}
         </motion.div>
