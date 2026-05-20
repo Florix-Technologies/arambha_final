@@ -193,6 +193,15 @@ export default function Login() {
                 </svg>
                 Sign in with Google
               </button>
+
+              <div className="mt-6 text-center font-sans">
+                <p className="text-sm text-on-surface-variant">
+                  Don't have an account?{" "}
+                  <Link to="/signup" className="text-accent-gold font-bold hover:underline">
+                    Sign up
+                  </Link>
+                </p>
+              </div>
             </form>
           </motion.div>
         </div>

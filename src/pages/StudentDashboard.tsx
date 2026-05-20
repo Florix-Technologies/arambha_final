@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { Calendar, Clock, Link as LinkIcon, Zap, PlayCircle, BookOpen } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Calendar, Clock, Link as LinkIcon, Zap, PlayCircle, BookOpen, User } from 'lucide-react';
 import { getActiveWebinars, getUpcomingWebinars, Webinar } from '../services/webinarService';
 import { useAuth } from '../context/AuthContext';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import StudentProfile from '../components/StudentProfile';
 
 export default function StudentDashboard() {
   const { currentUser } = useAuth();
@@ -12,6 +13,7 @@ export default function StudentDashboard() {
   const [upcomingWebinars, setUpcomingWebinars] = useState<Webinar[]>([]);
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'overview' | 'profile'>('overview');
 
   useEffect(() => {
     fetchDashboardData();
@@ -24,18 +26,7 @@ export default function StudentDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [active, upcoming] = await Promise.all([
-        getActiveWebinars(),
-        getUpcomingWebinars()
-      ]);
-      
-      // Filter upcoming to exclude already active ones
-      const filteredUpcoming = upcoming.filter(w => !active.find(a => a.id === w.id));
-      
-      setActiveWebinars(active);
-      setUpcomingWebinars(filteredUpcoming);
-
-      // Fetch enrollments from Firebase
+      // Fetch enrollments from Firebase first
       let firebaseEnrollments: any[] = [];
       if (currentUser) {
         try {
@@ -55,6 +46,22 @@ export default function StudentDashboard() {
       }
 
       setEnrolledCourses(firebaseEnrollments);
+      const enrolledCourseIds = firebaseEnrollments.map(e => e.course_id);
+
+      const [active, upcoming] = await Promise.all([
+        getActiveWebinars(),
+        getUpcomingWebinars()
+      ]);
+      
+      // Filter upcoming to exclude already active ones
+      const filteredUpcoming = upcoming.filter(w => !active.find(a => a.id === w.id));
+      
+      // Only show webinars for courses the student is enrolled in
+      const studentActive = active.filter(w => w.courseId && enrolledCourseIds.includes(w.courseId));
+      const studentUpcoming = filteredUpcoming.filter(w => w.courseId && enrolledCourseIds.includes(w.courseId));
+
+      setActiveWebinars(studentActive);
+      setUpcomingWebinars(studentUpcoming);
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);
     } finally {
@@ -102,23 +109,56 @@ export default function StudentDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pt-24 pb-20">
       <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">Student Dashboard</h1>
-          <p className="text-slate-600">Welcome back! Here is your learning progress.</p>
-        </motion.div>
+        {/* Header and Tabs */}
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">Student Dashboard</h1>
+            <p className="text-slate-600">Welcome back! Here is your learning progress.</p>
+          </motion.div>
 
-        {/* My Courses Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="mb-12"
-        >
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex bg-slate-200/50 p-1 rounded-xl w-fit"
+          >
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${
+                activeTab === 'overview' 
+                  ? 'bg-white text-primary shadow-sm' 
+                  : 'text-slate-500 hover:text-primary hover:bg-slate-200/50'
+              }`}
+            >
+              <BookOpen size={16} />
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${
+                activeTab === 'profile' 
+                  ? 'bg-white text-primary shadow-sm' 
+                  : 'text-slate-500 hover:text-primary hover:bg-slate-200/50'
+              }`}
+            >
+              <User size={16} />
+              My Profile
+            </button>
+          </motion.div>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {activeTab === 'overview' ? (
+            <motion.div
+              key="overview"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              {/* My Courses Section */}
+              <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg">
               <BookOpen size={18} className="text-blue-600" />
@@ -145,7 +185,7 @@ export default function StudentDashboard() {
               <p className="text-slate-500">You haven't enrolled in any courses yet.</p>
             </div>
           )}
-        </motion.div>
+        </div>
 
         {/* Active Webinars Section */}
         <motion.div
@@ -328,6 +368,18 @@ export default function StudentDashboard() {
             </div>
           </motion.div>
         )}
+        </motion.div>
+          ) : (
+            <motion.div
+              key="profile"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              <StudentProfile />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

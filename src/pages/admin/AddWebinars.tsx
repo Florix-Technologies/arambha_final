@@ -2,18 +2,21 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Plus, Trash2, Calendar, Clock, Link as LinkIcon, Loader2 } from 'lucide-react';
 import { addWebinar, getUpcomingWebinars, deleteWebinar, Webinar } from '../../services/webinarService';
+import { getCourses, Course } from '../../services/courseService';
 
 export default function AddWebinars() {
   const [webinars, setWebinars] = useState<Webinar[]>([]);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [courses, setCourses] = useState<Course[]>([]);
 
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     link: '',
     type: 'zoom' as 'zoom' | 'gmeet',
+    courseId: '',
     startDate: '',
     startTime: '',
     endDate: '',
@@ -22,7 +25,17 @@ export default function AddWebinars() {
 
   useEffect(() => {
     fetchWebinars();
+    fetchCourses();
   }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const data = await getCourses();
+      setCourses(data);
+    } catch (err) {
+      console.error('Failed to fetch courses:', err);
+    }
+  };
 
   const fetchWebinars = async () => {
     try {
@@ -46,7 +59,7 @@ export default function AddWebinars() {
     e.preventDefault();
 
     // Validate form
-    if (!formData.title || !formData.link || !formData.startDate || !formData.startTime || !formData.endDate || !formData.endTime) {
+    if (!formData.title || !formData.link || !formData.courseId || !formData.startDate || !formData.startTime || !formData.endDate || !formData.endTime) {
       setMessage({ type: 'error', text: 'Please fill all required fields' });
       return;
     }
@@ -68,6 +81,7 @@ export default function AddWebinars() {
         description: formData.description,
         link: formData.link,
         type: formData.type,
+        courseId: formData.courseId,
         startTime: startDateTime,
         endTime: endDateTime
       };
@@ -81,6 +95,7 @@ export default function AddWebinars() {
         description: '',
         link: '',
         type: 'zoom',
+        courseId: '',
         startDate: '',
         startTime: '',
         endDate: '',
@@ -189,6 +204,24 @@ export default function AddWebinars() {
                       <option value="gmeet">Google Meet</option>
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-primary mb-2">Select Course *</label>
+                  <select
+                    name="courseId"
+                    value={formData.courseId}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-gold"
+                    required
+                  >
+                    <option value="">-- Select a Course --</option>
+                    {courses.map(course => (
+                      <option key={course.id} value={course.id}>
+                        {course.title}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
