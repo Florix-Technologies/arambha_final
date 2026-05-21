@@ -128,77 +128,53 @@ export default function StudentDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pt-32 pb-20">
       <div className="max-w-6xl mx-auto px-4">
-        {/* Header with Search */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">Student Dashboard</h1>
-              <p className="text-slate-600">Welcome back! Here is your learning progress.</p>
-            </div>
-            {/* Search Bar */}
-            <div className="relative w-full md:w-80">
-              <Search className="absolute left-4 top-3.5 text-slate-400" size={20} />
-              <input
-                type="text"
-                placeholder="Search courses & webinars..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
-              />
-            </div>
-          </div>
+        {/* Header and Tabs */}
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">Student Dashboard</h1>
+            <p className="text-slate-600">Welcome back! Here is your learning progress.</p>
+          </motion.div>
 
-          {/* Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 }}
-              className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-primary"
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex bg-slate-200/50 p-1 rounded-xl w-fit"
+          >
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${
+                activeTab === 'overview' 
+                  ? 'bg-white text-primary shadow-sm' 
+                  : 'text-slate-500 hover:text-primary hover:bg-slate-200/50'
+              }`}
             >
-              <p className="text-slate-600 text-sm font-semibold">Enrolled</p>
-              <h3 className="text-3xl font-bold text-primary mt-2">{metrics.enrolled}</h3>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-green-500"
+              <BookOpen size={16} />
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${
+                activeTab === 'profile' 
+                  ? 'bg-white text-primary shadow-sm' 
+                  : 'text-slate-500 hover:text-primary hover:bg-slate-200/50'
+              }`}
             >
-              <p className="text-slate-600 text-sm font-semibold">Completed</p>
-              <h3 className="text-3xl font-bold text-green-600 mt-2">{metrics.completed}</h3>
-            </motion.div>
+              <User size={16} />
+              My Profile
+            </button>
+          </motion.div>
+        </div>
 
+        <AnimatePresence mode="wait">
+          {activeTab === 'overview' ? (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              key="overview"
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-              className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-accent-gold"
-            >
-              <p className="text-slate-600 text-sm font-semibold">In Progress</p>
-              <h3 className="text-3xl font-bold text-accent-gold mt-2">{metrics.inProgress}</h3>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-red-500"
-            >
-              <p className="text-slate-600 text-sm font-semibold">Live Now</p>
-              <h3 className="text-3xl font-bold text-red-600 mt-2">{metrics.activeWebinars}</h3>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-              className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-blue-500"
+              exit={{ opacity: 0, y: -10 }}
             >
               <p className="text-slate-600 text-sm font-semibold">Upcoming</p>
               <h3 className="text-3xl font-bold text-blue-600 mt-2">{metrics.upcomingWebinars}</h3>
