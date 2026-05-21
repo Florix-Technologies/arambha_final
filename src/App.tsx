@@ -23,6 +23,7 @@ const CategoryGallery = lazy(() => import("./pages/CategoryGallery"));
 const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
 import { AuthProvider } from "./context/AuthContext";
 import { AdminRoute } from "./components/AdminRoute";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import ReferralPopup from "./components/ReferralPopup";
 import ContactPopup from "./components/ContactPopup";
 import { OnboardingGuard } from "./components/OnboardingGuard";
@@ -85,7 +86,14 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/student/dashboard" element={<StudentDashboard />} />
+              <Route 
+                path="/student/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <StudentDashboard />
+                  </ProtectedRoute>
+                } 
+              />
               <Route 
                 path="/admin/portal" 
                 element={
