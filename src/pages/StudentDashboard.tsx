@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Clock, Link as LinkIcon, Zap, PlayCircle, BookOpen, User } from 'lucide-react';
+import { Calendar, Clock, Link as LinkIcon, Zap, PlayCircle, BookOpen, User, Search, Award, TrendingUp } from 'lucide-react';
 import { getActiveWebinars, getUpcomingWebinars, Webinar } from '../services/webinarService';
 import { useAuth } from '../context/AuthContext';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
@@ -14,6 +14,7 @@ export default function StudentDashboard() {
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'profile'>('overview');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchDashboardData();
@@ -137,6 +138,52 @@ export default function StudentDashboard() {
             <p className="text-slate-600">Welcome back! Here is your learning progress.</p>
           </motion.div>
 
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex bg-slate-200/50 p-1 rounded-xl w-fit"
+          >
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${
+                activeTab === 'overview' 
+                  ? 'bg-white text-primary shadow-sm' 
+                  : 'text-slate-500 hover:text-primary hover:bg-slate-200/50'
+              }`}
+            >
+              <BookOpen size={16} />
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${
+                activeTab === 'profile' 
+                  ? 'bg-white text-primary shadow-sm' 
+                  : 'text-slate-500 hover:text-primary hover:bg-slate-200/50'
+              }`}
+            >
+              <User size={16} />
+              My Profile
+            </button>
+          </motion.div>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {activeTab === 'overview' ? (
+            <motion.div
+              key="overview"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              <p className="text-slate-600 text-sm font-semibold">Upcoming</p>
+              <h3 className="text-3xl font-bold text-blue-600 mt-2">{metrics.upcomingWebinars}</h3>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Tab Selection */}
+        <div className="mb-12 flex justify-start">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
