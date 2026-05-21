@@ -30,6 +30,7 @@ export const SEO_CONFIG = {
 
   // Meta Tags Defaults
   defaultMeta: {
+    path: "",
     title: "Arambha Skill Solutions - Learn & Earn with Outcome-Driven Programs",
     description:
       "Premium skill development platform bridging learning and earning. Explore spoken English, full-stack development, and professional programs. Join 5000+ active students.",

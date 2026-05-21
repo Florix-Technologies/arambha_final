@@ -1,4 +1,4 @@
-import { Facebook, Twitter, Instagram, Linkedin, MapPin, Phone, Mail } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, MapPin, Phone, Mail, Globe } from "lucide-react";
 import logo from "../assets/ARAMBHA(1).svg";
 
 import arambhaText from "../assets/arambha-text.svg";

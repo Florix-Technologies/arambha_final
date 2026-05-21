@@ -176,52 +176,74 @@ export default function StudentDashboard() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
             >
-              <p className="text-slate-600 text-sm font-semibold">Upcoming</p>
-              <h3 className="text-3xl font-bold text-blue-600 mt-2">{metrics.upcomingWebinars}</h3>
-            </motion.div>
-          </div>
-        </motion.div>
+              {/* Search Bar and Stat Cards */}
+              <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <div className="flex-1" />
+                {/* Search Bar */}
+                <div className="relative w-full md:w-80">
+                  <Search className="absolute left-4 top-3.5 text-slate-400" size={20} />
+                  <input
+                    type="text"
+                    placeholder="Search courses & webinars..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+                  />
+                </div>
+              </div>
 
-        {/* Tab Selection */}
-        <div className="mb-12 flex justify-start">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex bg-slate-200/50 p-1 rounded-xl w-fit"
-          >
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${
-                activeTab === 'overview' 
-                  ? 'bg-white text-primary shadow-sm' 
-                  : 'text-slate-500 hover:text-primary hover:bg-slate-200/50'
-              }`}
-            >
-              <BookOpen size={16} />
-              Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('profile')}
-              className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${
-                activeTab === 'profile' 
-                  ? 'bg-white text-primary shadow-sm' 
-                  : 'text-slate-500 hover:text-primary hover:bg-slate-200/50'
-              }`}
-            >
-              <User size={16} />
-              My Profile
-            </button>
-          </motion.div>
-        </div>
+              {/* Stat Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 }}
+                  className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-primary"
+                >
+                  <p className="text-slate-600 text-sm font-semibold">Enrolled</p>
+                  <h3 className="text-3xl font-bold text-primary mt-2">{metrics.enrolled}</h3>
+                </motion.div>
 
-        <AnimatePresence mode="wait">
-          {activeTab === 'overview' ? (
-            <motion.div
-              key="overview"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-            >
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-green-500"
+                >
+                  <p className="text-slate-600 text-sm font-semibold">Completed</p>
+                  <h3 className="text-3xl font-bold text-green-600 mt-2">{metrics.completed}</h3>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 }}
+                  className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-accent-gold"
+                >
+                  <p className="text-slate-600 text-sm font-semibold">In Progress</p>
+                  <h3 className="text-3xl font-bold text-accent-gold mt-2">{metrics.inProgress}</h3>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-red-500"
+                >
+                  <p className="text-slate-600 text-sm font-semibold">Live Now</p>
+                  <h3 className="text-3xl font-bold text-red-600 mt-2">{metrics.activeWebinars}</h3>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                  className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-blue-500"
+                >
+                  <p className="text-slate-600 text-sm font-semibold">Upcoming</p>
+                  <h3 className="text-3xl font-bold text-blue-600 mt-2">{metrics.upcomingWebinars}</h3>
+                </motion.div>
+              </div>
               {/* My Courses Section */}
               <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
