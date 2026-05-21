@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '../firebase/firebase';
+import { doc, onSnapshot, DocumentData } from 'firebase/firestore';
+import { auth, db } from '../firebase/firebase';
 
 interface AuthContextType {
   currentUser: User | null;
+  userData: DocumentData | null;
   loading: boolean;
 }
 
@@ -11,25 +13,43 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [userData, setUserData] = useState<DocumentData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
-      setLoading(false);
+      
+      if (user) {
+        // Listen to user document in Firestore
+        const unsubscribeDoc = onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
+          if (docSnap.exists()) {
+            setUserData(docSnap.data());
+          } else {
+            setUserData(null);
+          }
+          setLoading(false);
+        });
+
+        return () => unsubscribeDoc();
+      } else {
+        setUserData(null);
+        setLoading(false);
+      }
     });
 
-    return () => unsubscribe();
+    return () => unsubscribeAuth();
   }, []);
 
   const value = {
     currentUser,
+    userData,
     loading,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 }

@@ -201,11 +201,13 @@ export default function Login() {
                 Sign in with Google
               </button>
 
-              <div className="mt-8 text-center text-sm font-sans">
-                <span className="text-on-surface-variant">Don't have an account? </span>
-                <Link to="/signup" className="text-accent-gold font-bold hover:underline transition-all">
-                  Sign up
-                </Link>
+              <div className="mt-6 text-center font-sans">
+                <p className="text-sm text-on-surface-variant">
+                  Don't have an account?{" "}
+                  <Link to="/signup" className="text-accent-gold font-bold hover:underline">
+                    Sign up
+                  </Link>
+                </p>
               </div>
             </form>
           </motion.div>

@@ -33,6 +33,7 @@ export const signupUser = async (email: string, password: string, name: string) 
       enrolledCoursesCount: 0,
       completedCoursesCount: 0,
       certificatesEarned: 0,
+      onboardingCompleted: false,
     });
 
     return user;
@@ -82,6 +83,7 @@ export const loginWithGoogle = async () => {
         enrolledCoursesCount: 0,
         completedCoursesCount: 0,
         certificatesEarned: 0,
+        onboardingCompleted: false,
       });
     }
 

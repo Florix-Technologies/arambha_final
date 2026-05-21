@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { 
   Search, 
@@ -20,6 +20,19 @@ export default function ManageContacts() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedContact, setSelectedContact] = useState<any | null>(null);
+
+  const handleSelectContact = async (contact: any) => {
+    setSelectedContact(contact);
+    if (contact.id && contact.read === false) {
+      try {
+        await updateDoc(doc(db, "inquiries", contact.id), {
+          read: true
+        });
+      } catch (err) {
+        console.error("Error marking inquiry as read:", err);
+      }
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -79,10 +92,17 @@ export default function ManageContacts() {
             <motion.div
               layout
               key={contact.id}
-              onClick={() => setSelectedContact(contact)}
+              onClick={() => handleSelectContact(contact)}
               className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+              {contact.read === false && (
+                <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-accent-gold/10 text-accent-gold border border-accent-gold/20 rounded-full text-[9px] font-bold uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 bg-accent-gold rounded-full animate-pulse" />
+                  New
+                </div>
+              )}
+              
+              <div className={`absolute top-0 right-0 p-4 transition-opacity ${contact.read === false ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`}>
                 <MessageSquare className="text-accent-gold/20" size={48} />
               </div>
               

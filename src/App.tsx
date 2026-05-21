@@ -25,6 +25,9 @@ import { AuthProvider } from "./context/AuthContext";
 import { AdminRoute } from "./components/AdminRoute";
 import ReferralPopup from "./components/ReferralPopup";
 import ContactPopup from "./components/ContactPopup";
+import { OnboardingGuard } from "./components/OnboardingGuard";
+
+const Onboarding = lazy(() => import("./pages/Onboarding"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -66,8 +69,9 @@ export default function App() {
         <ScrollToTop />
         <div className="min-h-screen bg-white">
           <Navbar />
-          <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-accent-gold rounded-full animate-spin"></div></div>}>
-            <Routes>
+          <OnboardingGuard>
+            <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><div className="w-8 h-8 border-4 border-slate-200 border-t-accent-gold rounded-full animate-spin"></div></div>}>
+              <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/programs" element={<Programs />} />
@@ -80,6 +84,7 @@ export default function App() {
               <Route path="/legal-support" element={<LegalSupport />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/student/dashboard" element={<StudentDashboard />} />
               <Route 
                 path="/admin/portal" 
@@ -91,6 +96,7 @@ export default function App() {
               />
             </Routes>
           </Suspense>
+          </OnboardingGuard>
           <Footer />
           <ReferralPopup />
           <ContactPopup isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />

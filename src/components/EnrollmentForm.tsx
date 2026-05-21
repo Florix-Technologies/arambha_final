@@ -27,7 +27,7 @@ interface FormErrors {
 }
 
 export default function EnrollmentForm({ isOpen, onClose, program, onSuccess }: EnrollmentFormProps) {
-  const { currentUser } = useAuth();
+  const { currentUser, userData } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState<'form' | 'payment' | 'success'>('form');
   const [loading, setLoading] = useState(false);
@@ -36,12 +36,12 @@ export default function EnrollmentForm({ isOpen, onClose, program, onSuccess }: 
   const [formData, setFormData] = useState({
     name: currentUser?.displayName || "",
     email: currentUser?.email || "",
-    phone: "",
-    whatsapp: "",
-    address: "",
-    collegeName: "",
-    yearOfPassing: "",
-    highestEducation: "",
+    phone: userData?.phone || "",
+    whatsapp: userData?.whatsapp || "",
+    address: userData?.address || "",
+    collegeName: userData?.collegeName || "",
+    yearOfPassing: userData?.yearOfPassing || "",
+    highestEducation: userData?.highestEducation || "",
   });
 
   useEffect(() => {
@@ -52,7 +52,18 @@ export default function EnrollmentForm({ isOpen, onClose, program, onSuccess }: 
         email: currentUser.email || "",
       }));
     }
-  }, [currentUser]);
+    if (userData) {
+      setFormData(prev => ({
+        ...prev,
+        phone: userData.phone || prev.phone,
+        whatsapp: userData.whatsapp || prev.whatsapp,
+        address: userData.address || prev.address,
+        collegeName: userData.collegeName || prev.collegeName,
+        yearOfPassing: userData.yearOfPassing || prev.yearOfPassing,
+        highestEducation: userData.highestEducation || prev.highestEducation,
+      }));
+    }
+  }, [currentUser, userData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -162,9 +173,12 @@ export default function EnrollmentForm({ isOpen, onClose, program, onSuccess }: 
                   <div>
                     <label className="block text-xs font-bold uppercase text-slate-700 mb-2">Qualification *</label>
                     <select name="highestEducation" value={formData.highestEducation} onChange={handleChange} className="w-full border rounded-xl px-4 py-3 bg-slate-50" required>
-                      <option value="">-- Select --</option>
-                      <option value="B.Tech">B.Tech</option>
-                      <option value="Graduate">Graduate</option>
+                      <option value="">-- Select Qualification --</option>
+                      <option value="B.Tech/BE">B.Tech / BE</option>
+                      <option value="B.Sc/BCA">B.Sc / BCA</option>
+                      <option value="M.Tech/MCA">M.Tech / MCA</option>
+                      <option value="Diploma">Diploma</option>
+                      <option value="Other Graduate">Other Graduate</option>
                       <option value="Other">Other</option>
                     </select>
                   </div>
