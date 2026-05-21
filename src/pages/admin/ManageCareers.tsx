@@ -143,7 +143,6 @@ export default function ManageCareers() {
             <button 
               onClick={() => {
                 setShowCreateForm(false);
-                fetchCareers();
               }}
               className="flex items-center gap-2 text-primary hover:text-accent-gold transition-colors font-bold"
             >
@@ -154,7 +153,6 @@ export default function ManageCareers() {
           </div>
           <CreateCareer onComplete={() => {
             setShowCreateForm(false);
-            fetchCareers();
           }} />
         </motion.div>
       ) : (

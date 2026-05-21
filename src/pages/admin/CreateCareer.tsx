@@ -41,7 +41,7 @@ const LOCATIONS = [
   "Hybrid"
 ];
 
-export default function CreateCareer() {
+export default function CreateCareer({ onComplete }: { onComplete?: () => void }) {
   const navigate = useNavigate();
 
   // Job Details
@@ -83,7 +83,13 @@ export default function CreateCareer() {
       });
 
       setSuccess(true);
-      setTimeout(() => navigate('/admin/portal?tab=manage-careers'), 2000);
+      setTimeout(() => {
+        if (onComplete) {
+          onComplete();
+        } else {
+          navigate('/admin/portal?tab=manage-careers');
+        }
+      }, 2000);
     } catch (err: any) {
       setError(err.message || 'Failed to create job posting.');
     } finally {

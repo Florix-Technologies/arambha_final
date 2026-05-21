@@ -30,7 +30,7 @@ const CATEGORIES = [
   "Job Ready"
 ];
 
-export default function CreateCourse() {
+export default function CreateCourse({ onComplete }: { onComplete?: () => void }) {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
@@ -167,7 +167,13 @@ export default function CreateCourse() {
       setSuccess(true);
       setProgress(100);
       
-      setTimeout(() => navigate('/admin/portal'), 3000);
+      setTimeout(() => {
+        if (onComplete) {
+          onComplete();
+        } else {
+          navigate('/admin/portal');
+        }
+      }, 3000);
 
     } catch (err: any) {
       if (err.name === 'AbortError') {
