@@ -19,7 +19,6 @@ const LegalSupport = lazy(() => import("./pages/LegalSupport"));
 const AdminPortal = lazy(() => import("./pages/admin/AdminPortal"));
 const ProgramDetails = lazy(() => import("./pages/ProgramDetails"));
 const Gallery = lazy(() => import("./pages/Gallery"));
-const CategoryGallery = lazy(() => import("./pages/CategoryGallery"));
 const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
 import { AuthProvider } from "./context/AuthContext";
 import { AdminRoute } from "./components/AdminRoute";
@@ -80,7 +79,6 @@ export default function App() {
               <Route path="/services" element={<Services />} />
               <Route path="/services/:slug" element={<ServiceDetail />} />
               <Route path="/gallery" element={<Gallery />} />
-              <Route path="/gallery/:category" element={<CategoryGallery />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/legal-support" element={<LegalSupport />} />
               <Route path="/login" element={<Login />} />
