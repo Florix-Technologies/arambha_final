@@ -213,7 +213,7 @@ function TimelineItem({ year, title, description, icon: Icon, subTitle, subDesc,
 }
 
 const Evolution = () => (
-  <section className="pt-0 pb-16 bg-white relative overflow-hidden">
+  <section id="evolution" className="pt-0 pb-16 bg-white relative overflow-hidden">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-24">
         <h2 className="text-5xl md:text-6xl font-serif font-extrabold text-primary mb-6 italic">Our Evolution</h2>
@@ -296,7 +296,7 @@ const FeatureCard = ({ icon: Icon, title, desc }) => (
 );
 
 const Differentiation = () => (
-  <section className="pt-16 pb-32 bg-[#e1e8f2]">
+  <section id="differentiation" className="pt-16 pb-32 bg-[#e1e8f2]">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-12 sm:mb-20">
         <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-extrabold text-primary mb-4 sm:mb-6 leading-tight max-w-4xl mx-auto lora">
@@ -367,7 +367,7 @@ const Differentiation = () => (
 );
 
 const Team = () => (
-  <section className="pt-16 pb-32 bg-white">
+  <section id="team" className="pt-16 pb-32 bg-white">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-12 sm:mb-20">
         <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-extrabold text-primary mb-4 sm:mb-6 leading-tight max-w-4xl mx-auto lora">
@@ -503,7 +503,7 @@ const Problem = () => (
 );
 
 const MissionVision = () => (
-  <section className="py-20 bg-surface relative overflow-hidden">
+  <section id="mission-vision" className="py-20 bg-surface relative overflow-hidden">
     <div className="max-w-5xl mx-auto px-6 relative z-10">
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 relative">
 
@@ -604,7 +604,7 @@ const Values = () => {
   ];
 
   return (
-    <section className="py-16 sm:py-32 bg-white overflow-hidden">
+    <section id="values" className="py-16 sm:py-32 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12 sm:mb-24 relative z-20">
           <span className="text-secondary font-bold text-xs sm:text-sm md:text-base tracking-[0.3em] uppercase mb-3 sm:mb-4 block">Corporate Values</span>

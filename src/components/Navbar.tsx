@@ -1,12 +1,13 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, LogOut, ShieldCheck, Filter, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogOut, ShieldCheck, Filter, LayoutDashboard, ChevronDown } from "lucide-react";
 import logo from "../assets/ARAMBHA.svg";
 import arambhaText from "../assets/arambha-text.svg";
 import { useAuth } from "../context/AuthContext";
 import { isUserAdmin } from "../services/adminService";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
+import { motion, AnimatePresence } from "motion/react";
 
 export default function Navbar() {
   const location = useLocation();
@@ -17,6 +18,10 @@ export default function Navbar() {
   const [isPortalDropdownOpen, setIsPortalDropdownOpen] = useState(false);
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
+
+  // Dropdown states
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (currentUser) {
@@ -35,6 +40,7 @@ export default function Navbar() {
       } else {
         setVisible(false);
         setIsMenuOpen(false); // close mobile menu when hiding
+        setHoveredNav(null); // Close dropdown when scrolling down
       }
       lastScrollY.current = currentY;
     };
@@ -47,14 +53,108 @@ export default function Navbar() {
     return location.pathname === path;
   };
 
+  const handleMouseEnter = (label: string) => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    setHoveredNav(label);
+  };
+
+  const handleMouseLeave = () => {
+    hoverTimeout.current = setTimeout(() => {
+      setHoveredNav(null);
+    }, 250); // slight delay for better UX
+  };
+
   const navLinks = [
     { path: "/", label: "Home" },
-    { path: "/about", label: "About" },
-    { path: "/programs", label: "Programs" },
-    { path: "/services", label: "Services" },
+    { 
+      path: "/about", 
+      label: "About",
+      sections: [
+        { label: "Our Evolution", hash: "#evolution" },
+        { label: "Why Choose Us", hash: "#differentiation" },
+        { label: "Leadership Team", hash: "#team" },
+        { label: "Mission & Vision", hash: "#mission-vision" },
+        { label: "Corporate Values", hash: "#values" }
+      ]
+    },
+    { 
+      path: "/programs", 
+      label: "Programs",
+      sections: [
+        { label: "Spoken English", hash: "?category=Spoken+English" },
+        { label: "Schooling", hash: "?category=Schooling" },
+        { label: "BTech", hash: "?category=BTech" },
+        { label: "Graduate", hash: "?category=Graduate" },
+        { label: "Job Ready", hash: "?category=Job+Ready" }
+      ]
+    },
+    { 
+      path: "/services", 
+      label: "Services",
+      sections: [
+        { label: "Skill Certification", hash: "/skill-certification" },
+        { label: "Manpower Solutions", hash: "/manpower-solutions" },
+        { label: "Admission Support", hash: "/admission-support" },
+        { label: "Training Workforce", hash: "/training-workforce" },
+        { label: "Placement Assistance", hash: "/placement-assistance" },
+        { label: "Live Projects", hash: "/live-projects" }
+      ]
+    },
     { path: "/gallery", label: "Gallery" },
-    { path: "/careers", label: "Careers" },
+    { 
+      path: "/careers", 
+      label: "Careers",
+      sections: [
+        { label: "Active Hiring", hash: "#active-hires" },
+        { label: "Business Dev & Sales", hash: "#sales-roles" },
+        { label: "Internships", hash: "#internships" }
+      ]
+    },
   ];
+
+  // Handle hash navigation robustly with navbar offset
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          const navbarHeight = 85;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }
+      }, 300); // generous timeout to ensure page is loaded
+    }
+  }, [location.pathname, location.hash]);
+
+  const handleNavClick = (path: string, hash: string) => {
+    setHoveredNav(null);
+    if (hash.startsWith("?")) return; 
+    
+    // If we are already on the page, the hash change might not trigger the effect 
+    // if the hash is the same, so we manually trigger scroll here too
+    if (location.pathname === path && location.hash === hash) {
+      setTimeout(() => {
+        const id = hash.replace("#", "");
+        const element = document.getElementById(id);
+        if (element) {
+          const navbarHeight = 85;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }
+      }, 50);
+    }
+  };
 
   return (
     <nav
@@ -76,18 +176,67 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden md:flex items-center space-x-5 lg:space-x-8">
           {navLinks.map((link) => (
-            <Link
+            <div 
               key={link.path}
-              className={`text-sm font-semibold tracking-tight transition-colors pb-1 ${isActive(link.path)
-                ? 'text-primary border-b-2 border-accent-gold'
-                : 'text-on-surface-variant hover:text-primary'
-                }`}
-              to={link.path}
+              className="relative flex items-center h-[72px]"
+              onMouseEnter={() => handleMouseEnter(link.label)}
+              onMouseLeave={handleMouseLeave}
             >
-              {link.label}
-            </Link>
+              <Link
+                className={`text-sm font-semibold tracking-tight transition-colors flex items-center ${isActive(link.path)
+                  ? 'text-primary border-b-2 border-accent-gold'
+                  : 'text-on-surface-variant hover:text-primary'
+                  }`}
+                to={link.path}
+              >
+                {link.label}
+                {link.sections && (
+                  <motion.div
+                    animate={{ rotate: hoveredNav === link.label ? 180 : 0 }}
+                    transition={{ duration: 0.2, ease: "linear" }}
+                    className="ml-1"
+                  >
+                    <ChevronDown size={14} className={hoveredNav === link.label ? "text-primary" : "opacity-70"} />
+                  </motion.div>
+                )}
+              </Link>
+
+              {/* Dropdown */}
+              {link.sections && (
+                <AnimatePresence>
+                  {hoveredNav === link.label && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 5 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 w-56 z-50 pt-2"
+                    >
+                      <div className="bg-white rounded-[16px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 p-2 overflow-hidden flex flex-col gap-1">
+                        {link.sections.map((section) => {
+                          const destPath = section.hash.startsWith('/') 
+                            ? `/services${section.hash}` 
+                            : `${link.path}${section.hash}`;
+                          
+                          return (
+                            <Link
+                              key={section.label}
+                              to={destPath}
+                              onClick={() => handleNavClick(link.path, section.hash)}
+                              className="px-3 py-2.5 rounded-[12px] text-sm font-medium text-slate-700 hover:text-primary hover:bg-slate-50 transition-colors"
+                            >
+                              {section.label}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              )}
+            </div>
           ))}
           {isAdmin && (
             <Link
@@ -116,9 +265,9 @@ export default function Navbar() {
         </div>
 
         {/* Desktop CTA Buttons */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
           {!currentUser ? (
-            <Link to="/login" className="hidden lg:block text-sm font-semibold text-on-surface-variant hover:text-primary transition-all">Login</Link>
+            <Link to="/login" className="text-sm font-semibold text-on-surface-variant hover:text-primary transition-all">Login</Link>
           ) : (
             <button
               onClick={() => {
@@ -126,13 +275,13 @@ export default function Navbar() {
                 window.dispatchEvent(new CustomEvent('mock-login', { detail: null }));
                 signOut(auth).then(() => navigate('/'));
               }}
-              className="hidden lg:flex items-center gap-2 text-sm font-semibold text-red-500 hover:text-red-600 transition-all cursor-pointer"
+              className="flex items-center gap-2 text-sm font-semibold text-red-500 hover:text-red-600 transition-all cursor-pointer"
             >
               <LogOut size={16} />
               Logout
             </button>
           )}
-          <button className="brand-gradient-gold text-white px-4 lg:px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md hover:brightness-110 active:scale-95 transition-all whitespace-nowrap">
+          <button className="brand-gradient-gold text-white px-4 lg:px-6 py-2 sm:py-2.5 rounded-lg text-sm font-semibold shadow-md hover:brightness-110 active:scale-95 transition-all whitespace-nowrap">
             Book a Class
           </button>
         </div>
@@ -152,17 +301,40 @@ export default function Navbar() {
         <div className="md:hidden border-t border-slate-100 bg-white">
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-3">
             {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                className={`block px-4 py-3 rounded-lg font-semibold transition-all ${isActive(link.path)
-                  ? 'bg-accent-gold text-white'
-                  : 'text-on-surface-variant hover:bg-slate-50'
-                  }`}
-                to={link.path}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
+              <div key={link.path}>
+                <Link
+                  className={`block px-4 py-3 rounded-lg font-semibold transition-all ${isActive(link.path)
+                    ? 'bg-accent-gold text-white'
+                    : 'text-on-surface-variant hover:bg-slate-50'
+                    }`}
+                  to={link.path}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+                {link.sections && (
+                  <div className="pl-6 pr-4 py-1 space-y-1 border-l-2 border-slate-100 ml-6 mt-1 mb-2">
+                    {link.sections.map((section) => {
+                      const destPath = section.hash.startsWith('/') 
+                        ? `/services${section.hash}` 
+                        : `${link.path}${section.hash}`;
+                      return (
+                        <Link
+                          key={section.label}
+                          to={destPath}
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            handleNavClick(link.path, section.hash);
+                          }}
+                          className="block py-2 text-sm font-medium text-slate-600 hover:text-primary transition-colors"
+                        >
+                          {section.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             ))}
             {isAdmin && (
               <div className="space-y-3">
