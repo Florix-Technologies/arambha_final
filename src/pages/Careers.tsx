@@ -379,7 +379,7 @@ const CourseCard = ({ course, onApply }: { course: Job, onApply?: () => void }) 
 
 const CourseCarousel = ({ title, subtitle, courses, id, onApply }: { title?: string, subtitle?: string, courses: Job[], id: string, onApply: (title: string) => void }) => {
   return (
-    <section className="py-8 font-sans">
+    <section id={id} className="py-8 font-sans">
       {title && (
         <div className="mb-4">
           <h2 className="text-2xl font-extrabold tracking-tight font-serif italic" style={{ color: COLORS.primary }}>{title}</h2>

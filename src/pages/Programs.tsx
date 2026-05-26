@@ -4,7 +4,7 @@ import { ArrowRight, BookOpen, GraduationCap, Users, CheckCircle2, Loader2, Cale
 import { getCourses, Course } from "../services/courseService";
 import { useAuth } from "../context/AuthContext";
 import { isUserAdmin } from "../services/adminService";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import EnrollmentForm from "../components/EnrollmentForm";
 
 // Import program images
@@ -55,6 +55,8 @@ export default function ProgramsScreen() {
   const [isEnrollFormOpen, setIsEnrollFormOpen] = useState(false);
   const [activeEnrollProgram, setActiveEnrollProgram] = useState<{id: string, title: string} | null>(null);
 
+  const location = useLocation();
+
   useEffect(() => {
     if (currentUser) {
       isUserAdmin(currentUser.uid).then(setIsAdmin);
@@ -62,6 +64,26 @@ export default function ProgramsScreen() {
       setIsAdmin(false);
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const cat = params.get('category');
+    if (cat && CATEGORIES.includes(cat)) {
+      setSelectedCategory(cat);
+      setTimeout(() => {
+        const element = document.getElementById("programs-section");
+        if (element) {
+          const navbarHeight = 85;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }
+      }, 100);
+    }
+  }, [location.search]);
 
   const handleEnroll = (program: any) => {
     if (!currentUser) {
