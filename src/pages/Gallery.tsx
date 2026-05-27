@@ -1,7 +1,56 @@
-import { motion } from "motion/react";
-import GalleryGrid from "../components/gallery/GalleryGrid";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  X,
+} from "lucide-react";
+import GalleryCarousel from "../components/gallery/GalleryCarousel";
+import { galleryImages } from "../data/gallery";
 
 export default function Gallery() {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+  // Keyboard navigation for Lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedIndex === null) return;
+      if (e.key === "Escape") setSelectedIndex(null);
+      if (e.key === "ArrowRight") handleNext();
+      if (e.key === "ArrowLeft") handlePrev();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedIndex]);
+
+  // Lock body scroll when Lightbox is open
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.classList.add("lenis-stopped");
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.classList.remove("lenis-stopped");
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.classList.remove("lenis-stopped");
+    };
+  }, [selectedIndex]);
+
+  const handleNext = () => {
+    setSelectedIndex((prev) =>
+      prev !== null ? (prev + 1) % galleryImages.length : null
+    );
+  };
+
+  const handlePrev = () => {
+    setSelectedIndex((prev) =>
+      prev !== null ? (prev - 1 + galleryImages.length) % galleryImages.length : null
+    );
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -49,17 +98,102 @@ export default function Gallery() {
         </div>
       </section>
 
-      {/* Bento Gallery Section */}
+      {/* Gallery Section */}
       <section className="max-w-7xl mx-auto px-6 py-24">
-        <div className="flex flex-col items-center text-center mb-16">
+        <div className="flex flex-col items-center text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-serif text-primary italic font-bold mb-4">
             Moments of Excellence
           </h2>
           <div className="w-24 h-[3px] bg-accent-gold" />
         </div>
 
-        <GalleryGrid />
+        {/* Gallery Content */}
+        <div className="relative mt-8">
+          <GalleryCarousel
+            images={galleryImages}
+            onImageClick={setSelectedIndex}
+            speed="medium"
+            direction="left"
+            isPaused={false}
+          />
+        </div>
       </section>
+
+      {/* Immersive Lightbox Modal */}
+      <AnimatePresence>
+        {selectedIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center backdrop-blur-md"
+            onClick={() => setSelectedIndex(null)}
+          >
+            {/* Header controls */}
+            <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-[110]">
+              <span className="text-white/60 text-sm font-sans tracking-widest">
+                {selectedIndex + 1} / {galleryImages.length}
+              </span>
+              <div className="flex items-center gap-4">
+                <a
+                  href={galleryImages[selectedIndex].src}
+                  download={`arambha-gallery-${galleryImages[selectedIndex].id}.jpg`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-white/70 hover:text-white p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all flex items-center justify-center"
+                  title="Download Image"
+                >
+                  <Download size={22} />
+                </a>
+                <button
+                  onClick={() => setSelectedIndex(null)}
+                  className="text-white/70 hover:text-white p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all flex items-center justify-center cursor-pointer"
+                  title="Close"
+                >
+                  <X size={22} />
+                </button>
+              </div>
+            </div>
+
+            {/* Navigation buttons */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrev();
+              }}
+              className="absolute left-6 text-white/50 hover:text-white p-3 rounded-full bg-white/5 hover:bg-white/10 transition-all z-[110] cursor-pointer"
+            >
+              <ChevronLeft size={30} />
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext();
+              }}
+              className="absolute right-6 text-white/50 hover:text-white p-3 rounded-full bg-white/5 hover:bg-white/10 transition-all z-[110] cursor-pointer"
+            >
+              <ChevronRight size={30} />
+            </button>
+
+            {/* Centered Image Container */}
+            <motion.div
+              key={selectedIndex}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="relative max-w-[85vw] max-h-[80vh] flex items-center justify-center p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={galleryImages[selectedIndex].src}
+                alt={galleryImages[selectedIndex].alt}
+                className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl border border-white/5 select-none"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Newsletter / CTA Section */}
       <section className="bg-primary py-24 px-6 overflow-hidden relative">
@@ -81,7 +215,7 @@ export default function Gallery() {
               placeholder="Your email address"
               className="flex-grow bg-white/10 border border-white/20 px-6 py-4 rounded-lg text-white placeholder:text-white/40 focus:bg-white/20 outline-none transition-all"
             />
-            <button className="bg-accent-gold text-primary font-bold px-8 py-4 rounded-lg hover:brightness-110 active:scale-95 transition-all">
+            <button className="bg-accent-gold text-primary font-bold px-8 py-4 rounded-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer">
               Subscribe
             </button>
           </div>

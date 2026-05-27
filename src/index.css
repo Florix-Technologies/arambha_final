@@ -24,6 +24,26 @@
   }
 }
 
+/* Custom continuous horizontal marquee classes */
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 35s) linear infinite;
+  animation-direction: var(--marquee-direction, normal);
+  animation-play-state: var(--marquee-play-state, running);
+  will-change: transform;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+
 @layer base {
   body {
     @apply font-sans bg-background text-primary;
