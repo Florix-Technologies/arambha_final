@@ -22,6 +22,13 @@ export default function Navbar() {
   // Dropdown states
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [expandedMobileNav, setExpandedMobileNav] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      setExpandedMobileNav(null);
+    }
+  }, [isMenuOpen]);
 
   useEffect(() => {
     if (currentUser) {
@@ -31,15 +38,27 @@ export default function Navbar() {
     }
   }, [currentUser]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
   useEffect(() => {
     const handleScroll = () => {
+      if (isMenuOpen) return; // Don't hide navbar or modify menu state when mobile menu is open
       const currentY = window.scrollY;
       // Show navbar when scrolling up OR near the top
       if (currentY < 10 || currentY < lastScrollY.current) {
         setVisible(true);
       } else {
         setVisible(false);
-        setIsMenuOpen(false); // close mobile menu when hiding
         setHoveredNav(null); // Close dropdown when scrolling down
       }
       lastScrollY.current = currentY;
@@ -47,7 +66,7 @@ export default function Navbar() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isMenuOpen]);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -162,16 +181,16 @@ export default function Navbar() {
       style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
       <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 py-4 w-full">
-        <Link to="/" className="flex items-center relative w-[280px] sm:w-[350px] lg:w-[450px] xl:w-[500px] h-10 sm:h-12 lg:h-14 z-10 shrink-0">
+        <Link to="/" className="flex items-center relative w-[200px] min-[375px]:w-[240px] min-[400px]:w-[280px] sm:w-[350px] lg:w-[450px] xl:w-[500px] h-8 min-[375px]:h-10 sm:h-12 lg:h-14 z-10 shrink-0">
           <img
             alt="Arambha Skill Solutions"
-            className="absolute left-0 h-10 sm:h-12 lg:h-14 w-auto object-contain scale-[1.3] lg:scale-[1.6] origin-left transition-transform"
+            className="absolute left-0 h-8 min-[375px]:h-10 sm:h-12 lg:h-14 w-auto object-contain scale-[1.2] min-[375px]:scale-[1.3] lg:scale-[1.6] origin-left transition-transform"
             src={logo}
           />
           <img
             src={arambhaText}
             alt="Arambha Skill Solutions"
-            className="absolute left-[55px] sm:left-[65px] lg:left-[95px] h-10 sm:h-12 lg:h-14 w-auto object-contain scale-[1.4] sm:scale-[1.8] lg:scale-[2.2] xl:scale-[2.5] origin-left transition-transform"
+            className="absolute left-[42px] min-[375px]:left-[55px] sm:left-[65px] lg:left-[95px] h-8 min-[375px]:h-10 sm:h-12 lg:h-14 w-auto object-contain scale-[1.2] min-[375px]:scale-[1.4] sm:scale-[1.8] lg:scale-[2.2] xl:scale-[2.5] origin-left transition-transform"
           />
         </Link>
 
@@ -297,105 +316,157 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t border-slate-100 bg-white">
-          <div className="max-w-7xl mx-auto px-4 py-4 space-y-3">
-            {navLinks.map((link) => (
-              <div key={link.path}>
-                <Link
-                  className={`block px-4 py-3 rounded-lg font-semibold transition-all ${isActive(link.path)
-                    ? 'bg-accent-gold text-white'
-                    : 'text-on-surface-variant hover:bg-slate-50'
-                    }`}
-                  to={link.path}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-                {link.sections && (
-                  <div className="pl-6 pr-4 py-1 space-y-1 border-l-2 border-slate-100 ml-6 mt-1 mb-2">
-                    {link.sections.map((section) => {
-                      const destPath = section.hash.startsWith('/') 
-                        ? `/services${section.hash}` 
-                        : `${link.path}${section.hash}`;
-                      return (
-                        <Link
-                          key={section.label}
-                          to={destPath}
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            handleNavClick(link.path, section.hash);
-                          }}
-                          className="block py-2 text-sm font-medium text-slate-600 hover:text-primary transition-colors"
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            data-lenis-prevent
+            className="md:hidden border-t border-slate-100 bg-white max-h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden"
+          >
+            <div className="max-w-7xl mx-auto px-4 py-4 space-y-3">
+              {navLinks.map((link) => {
+                const hasSections = !!link.sections;
+                const isExpanded = expandedMobileNav === link.label;
+                
+                return (
+                  <div key={link.path}>
+                    {hasSections ? (
+                      <button
+                        onClick={() => setExpandedMobileNav(isExpanded ? null : link.label)}
+                        className={`w-full flex justify-between items-center px-4 py-3 rounded-lg font-semibold transition-all cursor-pointer ${
+                          isExpanded
+                            ? 'bg-slate-50 text-primary'
+                            : 'text-on-surface-variant hover:bg-slate-50'
+                        }`}
+                      >
+                        <span>{link.label}</span>
+                        <motion.div
+                          animate={{ rotate: isExpanded ? 180 : 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="opacity-70"
                         >
-                          {section.label}
-                        </Link>
-                      );
-                    })}
+                          <ChevronDown size={18} />
+                        </motion.div>
+                      </button>
+                    ) : (
+                      <Link
+                        className={`block px-4 py-3 rounded-lg font-semibold transition-all ${isActive(link.path)
+                          ? 'bg-accent-gold text-white'
+                          : 'text-on-surface-variant hover:bg-slate-50'
+                          }`}
+                        to={link.path}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {link.label}
+                      </Link>
+                    )}
+
+                    {hasSections && (
+                      <AnimatePresence initial={false}>
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2, ease: "easeInOut" }}
+                            className="overflow-hidden pl-6 pr-4 py-1 space-y-0.5 border-l-2 border-slate-100 ml-6 mt-1 mb-2 flex flex-col"
+                          >
+                            <Link
+                              to={link.path}
+                              onClick={() => setIsMenuOpen(false)}
+                              className="block py-2 text-sm font-semibold text-slate-800 hover:text-primary hover:translate-x-1 transition-all duration-200"
+                            >
+                              {link.label} Overview
+                            </Link>
+                            {link.sections.map((section) => {
+                              const destPath = section.hash.startsWith('/') 
+                                ? `/services${section.hash}` 
+                                : `${link.path}${section.hash}`;
+                              return (
+                                <Link
+                                  key={section.label}
+                                  to={destPath}
+                                  onClick={() => {
+                                    setIsMenuOpen(false);
+                                    handleNavClick(link.path, section.hash);
+                                  }}
+                                  className="block py-2 text-sm font-medium text-slate-500 hover:text-primary hover:translate-x-1 transition-all duration-200"
+                                >
+                                  {section.label}
+                                </Link>
+                              );
+                            })}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
-            {isAdmin && (
-              <div className="space-y-3">
+                );
+              })}
+              {isAdmin && (
+                <div className="space-y-3">
+                  <Link
+                    to="/admin/portal"
+                    className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${location.pathname.startsWith('/admin')
+                      ? 'bg-accent-gold text-white'
+                      : 'text-accent-gold hover:bg-accent-gold/5'
+                      }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <ShieldCheck size={20} />
+                    Admin Portal
+                  </Link>
+                </div>
+              )}
+              {currentUser && !isAdmin && (
+                <div className="space-y-3">
+                  <Link
+                    to="/student/dashboard"
+                    className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${location.pathname.startsWith('/student/dashboard')
+                      ? 'bg-accent-gold text-white'
+                      : 'text-accent-gold hover:bg-accent-gold/5'
+                      }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <LayoutDashboard size={20} />
+                    Student Dashboard
+                  </Link>
+                </div>
+              )}
+              {!currentUser ? (
                 <Link
-                  to="/admin/portal"
-                  className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${location.pathname.startsWith('/admin')
-                    ? 'bg-accent-gold text-white'
-                    : 'text-accent-gold hover:bg-accent-gold/5'
-                    }`}
+                  to="/login"
+                  className="block px-4 py-3 rounded-lg font-semibold text-on-surface-variant hover:bg-slate-50 transition-all"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <ShieldCheck size={20} />
-                  Admin Portal
+                  Login
                 </Link>
-              </div>
-            )}
-            {currentUser && !isAdmin && (
-              <div className="space-y-3">
-                <Link
-                  to="/student/dashboard"
-                  className={`block px-4 py-3 rounded-lg font-bold transition-all border-2 border-accent-gold/20 flex items-center gap-2 ${location.pathname.startsWith('/student/dashboard')
-                    ? 'bg-accent-gold text-white'
-                    : 'text-accent-gold hover:bg-accent-gold/5'
-                    }`}
-                  onClick={() => setIsMenuOpen(false)}
+              ) : (
+                <button
+                  onClick={() => {
+                    sessionStorage.removeItem('mockUser');
+                    window.dispatchEvent(new CustomEvent('mock-login', { detail: null }));
+                    signOut(auth).then(() => {
+                      navigate('/');
+                      setIsMenuOpen(false);
+                    });
+                  }}
+                  className="w-full flex items-center gap-2 px-4 py-3 rounded-lg font-semibold text-red-500 hover:bg-red-50 transition-all"
                 >
-                  <LayoutDashboard size={20} />
-                  Student Dashboard
-                </Link>
-              </div>
-            )}
-            {!currentUser ? (
-              <Link
-                to="/login"
-                className="block px-4 py-3 rounded-lg font-semibold text-on-surface-variant hover:bg-slate-50 transition-all"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Login
-              </Link>
-            ) : (
-              <button
-                onClick={() => {
-                  sessionStorage.removeItem('mockUser');
-                  window.dispatchEvent(new CustomEvent('mock-login', { detail: null }));
-                  signOut(auth).then(() => {
-                    navigate('/');
-                    setIsMenuOpen(false);
-                  });
-                }}
-                className="w-full flex items-center gap-2 px-4 py-3 rounded-lg font-semibold text-red-500 hover:bg-red-50 transition-all"
-              >
-                <LogOut size={20} />
-                Logout
+                  <LogOut size={20} />
+                  Logout
+                </button>
+              )}
+              <button className="w-full brand-gradient-gold text-white px-6 py-3 rounded-lg font-semibold shadow-md">
+                Book a Class
               </button>
-            )}
-            <button className="w-full brand-gradient-gold text-white px-6 py-3 rounded-lg font-semibold shadow-md">
-              Book a Class
-            </button>
-          </div>
-        </div>
-      )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
