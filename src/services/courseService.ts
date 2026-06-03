@@ -15,6 +15,20 @@ export interface Course {
 }
 
 export const getCourses = async (): Promise<Course[]> => {
+  // 1. Try fetching from backend API first (bypasses Firestore client-side permission rules)
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/courses`);
+    if (response.ok) {
+      const data = await response.json();
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
+    }
+  } catch (backendError) {
+    console.warn('Error fetching courses from backend API, trying Firestore direct:', backendError);
+  }
+
+  // 2. Fall back to Firestore direct query
   try {
     const coursesRef = collection(db, 'courses');
     const q = query(coursesRef, orderBy('createdAt', 'desc'));
@@ -46,6 +60,24 @@ const getLocalCourses = (): Course[] => [
     uploadStatus: 'completed'
   },
   {
+    id: 'foundation-60',
+    title: 'Foundation 60',
+    category: 'Schooling',
+    description: 'A comprehensive 60-day program covering Communication, Soft Skills, Spoken English, and Computer Basics.',
+    duration: '60 Days',
+    createdAt: new Date(),
+    uploadStatus: 'completed'
+  },
+  {
+    id: 'autocad',
+    title: 'AutoCAD Design',
+    category: 'BTech',
+    description: 'Professional AutoCAD training for Civil and Mechanical students.',
+    duration: '3 Months',
+    createdAt: new Date(),
+    uploadStatus: 'completed'
+  },
+  {
     id: 'fullstack-java',
     title: 'Full Stack Java Developer',
     category: 'BTech',
@@ -66,6 +98,24 @@ const getLocalCourses = (): Course[] => [
     uploadStatus: 'completed'
   },
   {
+    id: 'data-science',
+    title: 'Data Science & AI',
+    category: 'Job Ready',
+    description: 'Learn Python, Machine Learning, and Data Analysis from scratch.',
+    duration: '6 Months',
+    createdAt: new Date(),
+    uploadStatus: 'completed'
+  },
+  {
+    id: 'banking-finance',
+    title: 'Banking & Finance Masterclass',
+    category: 'Graduate',
+    description: 'Comprehensive training in Tally, GST, Advanced Excel, and Banking operations.',
+    duration: '3 Months',
+    createdAt: new Date(),
+    uploadStatus: 'completed'
+  },
+  {
     id: 'digital-marketing',
     title: 'Digital Marketing Expert',
     category: 'Graduate',
@@ -75,11 +125,11 @@ const getLocalCourses = (): Course[] => [
     uploadStatus: 'completed'
   },
   {
-    id: 'data-science',
-    title: 'Data Science & AI',
-    category: 'Job Ready',
-    description: 'Learn Python, Machine Learning, and Data Analysis from scratch.',
-    duration: '6 Months',
+    id: 'hr-management',
+    title: 'Human Resource Management',
+    category: 'Graduate',
+    description: 'Learn recruitment, payroll, and organizational management.',
+    duration: '3 Months',
     createdAt: new Date(),
     uploadStatus: 'completed'
   }

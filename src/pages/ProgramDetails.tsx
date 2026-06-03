@@ -8,6 +8,7 @@ import EnrollmentForm from "../components/EnrollmentForm";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { useState } from "react";
+import { PROGRAM_DETAILS } from "../data/programs";
 
 interface CourseDetail {
   learning: string[];
@@ -88,13 +89,29 @@ export default function ProgramDetails() {
           level: match.level || "",
         });
 
+        let detailData: CourseDetail | null = null;
         try {
           const detailRef = doc(db, "courseDetails", firestoreCourseId);
           const detailSnap = await getDoc(detailRef);
           if (detailSnap.exists()) {
-            setCourseDetail(detailSnap.data() as CourseDetail);
+            detailData = detailSnap.data() as CourseDetail;
           }
-        } catch (e) {}
+        } catch (e) {
+          console.warn("Firestore courseDetails fetch failed:", e);
+        }
+
+        if (!detailData) {
+          const localDetail = PROGRAM_DETAILS[firestoreCourseId];
+          if (localDetail) {
+            detailData = {
+              learning: localDetail.learn || [],
+              modules: (localDetail.modules || []).map(m => ({ name: m.title, description: m.desc || "" })),
+              duration: localDetail.duration || "",
+              level: localDetail.level || "",
+            };
+          }
+        }
+        setCourseDetail(detailData);
       } catch (err) {
         setNotFound(true);
       } finally {

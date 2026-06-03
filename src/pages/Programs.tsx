@@ -21,6 +21,19 @@ import programsHeroImg from "../assets/programs-hero.svg";
 
 const CATEGORIES = ["All", "Spoken English", "Schooling", "BTech", "Graduate", "Job Ready"];
 
+const IMAGE_MAP: Record<string, string> = {
+  "Spoken English Mastery": spokenEnglishImg,
+  "Foundation 60": foundation60Img,
+  "Digital Marketing Expert": digitalMarketingImg,
+  "Campus to Corporate Program": campusToCorporateImg,
+  "Arambha Campus to Corporate Program": campusToCorporateImg,
+  "Human Resource Management": hrManagementImg,
+  "Banking & Finance Masterclass": bankingFinanceImg,
+  "Full Stack Java Developer": fullStackJavaImg,
+  "Data Science & AI": dataScienceImg,
+  "AutoCAD Design": autocadImg,
+};
+
 const WHY_CHOOSE_US = [
   {
     title: "Industry-aligned curriculum",
@@ -110,7 +123,7 @@ export default function ProgramsScreen() {
           category: c.category || "Job Ready",
           duration: c.duration || "Self-Paced",
           description: c.description || "Premium course content uploaded by Arambha Experts.",
-          image: c.image || fullStackJavaImg,
+          image: IMAGE_MAP[c.title] || c.image || fullStackJavaImg,
           videoUrl: c.videoId
             ? `https://drive.google.com/uc?export=download&id=${c.videoId}`
             : "https://www.w3schools.com/html/mov_bbb.mp4",

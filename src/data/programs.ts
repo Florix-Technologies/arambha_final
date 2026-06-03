@@ -128,5 +128,20 @@ export const PROGRAM_DETAILS: Record<string, ProgramDetail> = {
     ],
     duration: "2 Months",
     level: "Beginner"
+  },
+  "foundation-60": {
+    title: "Foundation 60",
+    tag: "Schooling",
+    description: "A comprehensive 60-day program covering Communication, Soft Skills, Spoken English, and Computer Basics.",
+    learn: ["Communication", "Soft Skills", "Spoken English", "Computers"],
+    modules: [
+      { title: "Communication Skills", desc: "Develop strong verbal and non-verbal communication through role plays and real-life scenarios. Learn voice modulation, active listening, and presentation techniques." },
+      { title: "Spoken English", desc: "Improve grammar, vocabulary, and pronunciation with guided speaking practice and situational dialogues." },
+      { title: "Soft Skills Development", desc: "Enhance teamwork, leadership, emotional intelligence, and time management skills essential for personal and career growth." },
+      { title: "Computer Fundamentals", desc: "Gain hands-on experience with MS Office tools, email communication, and essential digital productivity skills." },
+      { title: "Practical Projects", desc: "Apply learning through mini-projects, presentations, and group discussions to build confidence and practical exposure." }
+    ],
+    duration: "60 Days",
+    level: "Beginner"
   }
 };
